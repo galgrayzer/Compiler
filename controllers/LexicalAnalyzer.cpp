@@ -2,18 +2,57 @@ using namespace std;
 
 #include <fstream>
 #include <list>
+#include <unordered_map>
 #include <regex>
 
 #include "../models/Token.cpp"
+#include "../models/DFA.cpp"
 
 class LexicalAnalyzer
 {
 private:
     // Attributes
     char *filePath;
+    DFA *dfa;
+    const unordered_map<string, string> DEFINED_VALUES = {
+        {"+", "OPERATOR"},
+        {"++", "OPERATOR"},
+        {"-", "OPERATOR"},
+        {"--", "OPERATOR"},
+        {"*", "OPERATOR"},
+        {"/", "OPERATOR"},
+        {"%", "OPERATOR"},
+        {"=", "OPERATOR"},
+        {"==", "OPERATOR"},
+        {"!=", "OPERATOR"},
+        {"<", "OPERATOR"},
+        {">", "OPERATOR"},
+        {"<=", "OPERATOR"},
+        {">=", "OPERATOR"},
+        {"&&", "OPERATOR"},
+        {"||", "OPERATOR"},
+        {"!", "OPERATOR"},
+        {"++", "OPERATOR"},
+        {"--", "OPERATOR"},
+        {"(", "SEPERATOR"},
+        {")", "SEPERATOR"},
+        {"{", "SEPERATOR"},
+        {"}", "SEPERATOR"},
+        {";", "SEPERATOR"},
+        {"int", "KEYWORD"},
+        {"char", "KEYWORD"},
+        {"bool", "KEYWORD"},
+        {"if", "KEYWORD"},
+        {"else", "KEYWORD"},
+        {"while", "KEYWORD"},
+        {"for", "KEYWORD"},
+        {"true", "KEYWORD"},
+        {"false", "KEYWORD"},
+        {"out", "KEYWORD"}};
 
     // Methods
     Token *tokenizer(string token);
+    string getToken(string line);
 
 public:
     // Constructor and Destructor
@@ -27,57 +66,78 @@ public:
 LexicalAnalyzer::LexicalAnalyzer(char *path)
 {
     this->filePath = path;
+    this->dfa = new DFA();
+    this->dfa->loadTransitionTable("C:\\Users\\galgr\\OneDrive\\Desktop\\Programs\\Compiler\\DFAs\\lexer.txt");
 }
+
+// string LexicalAnalyzer::getToken(string line)
+// {
+// }
 
 list<Token> LexicalAnalyzer::lexer()
 {
     list<Token> tokens;
     ifstream file(this->filePath);
-
-    string word;
-    string token;
-
-    int i = 0;
-    while (file >> word)
+    string line;
+    while (getline(file, line))
     {
-        int startIndex = 0;
-        for (int i = 0; i < word.length(); i++)
+        string token = "";
+        int currentState = 0;
+        for (int i = 0; i < line.length(); i++)
         {
-            if (word[i] == '*' || word[i] == '/' || word[i] == '%' || word[i] == '(' || word[i] == ')' || word[i] == '{' || word[i] == '}' || word[i] == ';')
+            if (this->dfa->getTransitionTable()[currentState][line[i]] != 0)
             {
-                token = word.substr(startIndex, i - startIndex);
-                if (token != "")
-                    tokens.push_back(*tokenizer(token));
-                tokens.push_back(*tokenizer(string(1, word[i])));
-                startIndex = i + 1;
-            }
-            else if (word[i] == '+' || word[i] == '-' || word[i] == '!' || word[i] == '=' || word[i] == '<' || word[i] == '>' || word[i] == '&' || word[i] == '|')
-            {
-                token = word.substr(startIndex, i - startIndex);
-                if (token != "")
-                    tokens.push_back(*tokenizer(token));
-
-                if (word[i + 1] == '=' || word[i + 1] == '&' || word[i + 1] == '|')
+                while (this->dfa->getTransitionTable()[currentState][line[i]] != 0)
                 {
-                    tokens.push_back(*tokenizer(string(1, word[i]) + string(1, word[i + 1]))); // <=, >=, ==, !=, &&, ||, ++, --
-                    startIndex = i + 2;
+                    token += line[i];
+                    currentState = this->dfa->getTransitionTable()[currentState][line[i]];
                     i++;
                 }
-                else
+                i--;
+                if ((isalpha(line[i]) || isalnum(line[i]) || line[i] == '_' || line[i] == 39))
                 {
-                    tokens.push_back(*tokenizer(string(1, word[i]))); // <, >, &, |, !
-                    startIndex = i + 1;
+                    i++;
+                    while (i < line.length() && (isalpha(line[i]) || isalnum(line[i]) || line[i] == '_' || line[i] == 39))
+                    {
+                        token += line[i];
+                        i++;
+                    }
+                    i--;
+                }
+                Token *t = tokenizer(token);
+                tokens.push_back(*t);
+                currentState = 0;
+                token = "";
+            }
+            else if (isalpha(line[i]) || isalnum(line[i]) || line[i] == '_' || line[i] == 39)
+            {
+                while (i < line.length() && (isalpha(line[i]) || isalnum(line[i]) || line[i] == '_' || line[i] == 39))
+                {
+                    token += line[i];
+                    i++;
+                }
+                if (token != "")
+                {
+                    i--;
+                    Token *t = tokenizer(token);
+                    tokens.push_back(*t);
+                    token = "";
+                    currentState = 0;
                 }
             }
-            else if (i == word.length() - 1)
+            else
             {
-                token = word.substr(startIndex, i - startIndex + 1);
-                tokens.push_back(*tokenizer(token));
+                if (line[i] != ' ')
+                {
+                    token += line[i];
+                    Token *t = tokenizer(token);
+                    tokens.push_back(*t);
+                    token = "";
+                    currentState = 0;
+                }
             }
         }
     }
-    file.close();
-
     return tokens;
 }
 
@@ -85,29 +145,17 @@ Token *LexicalAnalyzer::tokenizer(string token)
 {
     Token *t = new Token();
     t->token = token;
-    if (token == "=" || token == "+" || token == "-" || token == "*" || token == "/" || token == "%" || token == "==" || token == "!=" || token == "<" || token == ">" || token == "<=" || token == ">=" || token == "&&" || token == "&" || token == "|" || token == "||" || token == "++" || token == "--" || token == "!")
+    if (this->DEFINED_VALUES.find(token) != this->DEFINED_VALUES.end())
     {
-        t->type = "OPERATOR";
+        t->type = this->DEFINED_VALUES.at(token);
     }
-    else if (token == "if" || token == "else" || token == "while" || token == "for" || token == "out" || token == "int" || token == "char" || token == "bool")
-    {
-        t->type = "KEYWORD";
-    }
-    else if (token == "(" || token == ")" || token == "{" || token == "}" || token == ";")
-    {
-        t->type = "SEPERATOR";
-    }
-    else if (regex_match(token, regex("[0-9]+")) || regex_match(token, regex("'[a-zA-Z0-9]'")) || token == "true" || token == "false")
+    else if (regex_match(token, regex("[0-9]+")) || regex_match(token, regex("'.'")))
     {
         t->type = "LITERAL";
     }
-    else if (regex_match(token, regex("[a-zA-Z]+")))
-    {
-        t->type = "IDENTIFIER";
-    }
     else
     {
-        t->type = "UNKNOWN";
+        t->type = "IDENTIFIER";
     }
     return t;
 }

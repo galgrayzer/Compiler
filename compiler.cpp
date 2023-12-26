@@ -1,7 +1,6 @@
 using namespace std;
 
 #include <iostream>
-#include <list>
 
 #include "./controllers/LexicalAnalyzer.cpp"
 
@@ -15,7 +14,7 @@ void printTokens(list<Token> tokens)
 
 int main(int argc, char const *argv[])
 {
-    const char *FILE_PATH = argv[1];
+    const char *FILE_PATH = "main.gal"; //argv[1];
     LexicalAnalyzer *lex = new LexicalAnalyzer((char *)FILE_PATH);
     list<Token> tokens = lex->lexer();
     printTokens(tokens);

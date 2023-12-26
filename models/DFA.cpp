@@ -6,63 +6,56 @@ using namespace std;
 class DFA
 {
 private:
+    int transitionTable[128][128];
+    int initialState;
+
 public:
-    int transitionTable[7][128]; // 128 ASCII characters
     DFA();
+    void saveTransitionTable(string path);
+    void loadTransitionTable(string path);
     void addToken(string token);
-    void removeToken(string token);
-    void saveToFile(string filename);
-    void loadFromFile(string filename);
+    int (*getTransitionTable())[128] { return this->transitionTable; }
     ~DFA();
 };
 
 DFA::DFA()
 {
-    for (int i = 0; i < 7; i++)
+    this->initialState = 1;
+    for (int i = 0; i < 128; i++)
     {
         for (int j = 0; j < 128; j++)
         {
-            this->transitionTable[i][j] = -1;
+            this->transitionTable[i][j] = 0;
         }
     }
 }
 
 void DFA::addToken(string token)
 {
-    int state = 0;
-    for (int i = 0; i < token.length(); i++)
+    if (this->transitionTable[0][token[0]] == 0)
     {
-        int ascii = (int)token[i];
-        if (this->transitionTable[state][ascii] == -1)
+        this->transitionTable[0][token[0]] = this->initialState;
+        this->initialState++;
+    }
+    int currentState = this->transitionTable[0][token[0]];
+    for (int i = 1; i < token.length(); i++)
+    {
+        if (this->transitionTable[currentState][token[i]] == 0)
         {
-            this->transitionTable[state][ascii] = i + 1;
+            this->transitionTable[currentState][token[i]] = this->initialState;
+            this->initialState++;
         }
-        state = this->transitionTable[state][ascii];
+        currentState = this->transitionTable[currentState][token[i]];
     }
 }
 
-void DFA::removeToken(string token)
-{
-    int state = 0;
-    for (int i = 0; i < token.length(); i++)
-    {
-        int ascii = (int)token[i];
-        if (this->transitionTable[state][ascii] == -1)
-        {
-            return;
-        }
-        state = this->transitionTable[state][ascii];
-    }
-    this->transitionTable[state][token[token.length() - 1]] = -1;
-}
-
-void DFA::saveToFile(string filename)
+void DFA::saveTransitionTable(string path)
 {
     ofstream file;
-    file.open(filename);
-    for (int i = 0; i < 7; i++)
+    file.open(path);
+    for (int i = 0; i < sizeof(this->transitionTable) / sizeof(this->transitionTable[0]); i++)
     {
-        for (int j = 0; j < 128; j++)
+        for (int j = 0; j < sizeof(this->transitionTable[i]) / sizeof(this->transitionTable[i][0]); j++)
         {
             file << this->transitionTable[i][j] << ",";
         }
@@ -71,26 +64,30 @@ void DFA::saveToFile(string filename)
     file.close();
 }
 
-void DFA::loadFromFile(string filename)
+void DFA::loadTransitionTable(string path)
 {
     ifstream file;
-    file.open(filename);
+    file.open(path);
     string line;
+    int i = 0;
     while (getline(file, line))
     {
-        int startIndex = 0;
-        int row = 0;
-        int column = 0;
-        for (int i = 0; i < line.length(); i++)
+        int j = 0;
+        string token = "";
+        for (int k = 0; k < line.length(); k++)
         {
-            if (line[i] == ',')
+            if (line[k] == ',')
             {
-                string number = line.substr(startIndex, i - startIndex);
-                startIndex = i + 1;
-                this->transitionTable[row++][column] = stoi(number);
+                this->transitionTable[i][j] = stoi(token);
+                token = "";
+                j++;
             }
-            column++;
+            else
+            {
+                token += line[k];
+            }
         }
+        i++;
     }
     file.close();
 }
