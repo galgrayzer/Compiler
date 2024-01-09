@@ -11,6 +11,7 @@ private:
 
 public:
     DFA();
+    void init();
     void saveTransitionTable(string path);
     void loadTransitionTable(string path);
     void addToken(string token);
@@ -20,19 +21,45 @@ public:
 
 DFA::DFA()
 {
-    this->initialState = 1;
+    this->initialState = 2;
+}
+
+void DFA::init()
+{
     for (int i = 0; i < 128; i++)
+    {
+        if (isalnum(i) || i == '_' || isalpha(i))
+        {
+            this->transitionTable[0][i] = 1;
+        }
+        else
+        {
+            this->transitionTable[0][i] = -1;
+        }
+    }
+    for (int i = 0; i < 128; i++)
+    {
+        if (isalnum(i) || i == '_' || isalpha(i))
+        {
+            this->transitionTable[1][i] = 1;
+        }
+        else
+        {
+            this->transitionTable[1][i] = -1;
+        }
+    }
+    for (int i = 2; i < 128; i++)
     {
         for (int j = 0; j < 128; j++)
         {
-            this->transitionTable[i][j] = 0;
+            this->transitionTable[i][j] = -1;
         }
     }
 }
 
 void DFA::addToken(string token)
 {
-    if (this->transitionTable[0][token[0]] == 0)
+    if (this->transitionTable[0][token[0]] == -1)
     {
         this->transitionTable[0][token[0]] = this->initialState;
         this->initialState++;
@@ -40,7 +67,7 @@ void DFA::addToken(string token)
     int currentState = this->transitionTable[0][token[0]];
     for (int i = 1; i < token.length(); i++)
     {
-        if (this->transitionTable[currentState][token[i]] == 0)
+        if (this->transitionTable[currentState][token[i]] == -1)
         {
             this->transitionTable[currentState][token[i]] = this->initialState;
             this->initialState++;

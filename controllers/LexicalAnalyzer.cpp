@@ -1,9 +1,12 @@
 using namespace std;
 
+#define DFA_PATH "./DFAs/lexer.txt"
+
 #include <fstream>
 #include <list>
 #include <unordered_map>
 #include <regex>
+#include <iostream>
 
 #include "../models/Token.cpp"
 #include "../models/DFA.cpp"
@@ -67,7 +70,7 @@ LexicalAnalyzer::LexicalAnalyzer(char *path)
 {
     this->filePath = path;
     this->dfa = new DFA();
-    this->dfa->loadTransitionTable("C:\\Users\\galgr\\OneDrive\\Desktop\\Programs\\Compiler\\DFAs\\lexer.txt");
+    this->dfa->loadTransitionTable(DFA_PATH);
 }
 
 // string LexicalAnalyzer::getToken(string line)
@@ -82,62 +85,31 @@ list<Token> LexicalAnalyzer::lexer()
     while (getline(file, line))
     {
         string token = "";
+        Token *t;
         int currentState = 0;
         for (int i = 0; i < line.length(); i++)
         {
-            if (this->dfa->getTransitionTable()[currentState][line[i]] != 0)
+            if (this->dfa->getTransitionTable()[currentState][line[i]] == -1)
             {
-                while (this->dfa->getTransitionTable()[currentState][line[i]] != 0)
+                continue;
+            }
+            if (this->dfa->getTransitionTable()[currentState][line[i]] != -1)
+            {
+                while (this->dfa->getTransitionTable()[currentState][line[i]] != -1)
                 {
                     token += line[i];
                     currentState = this->dfa->getTransitionTable()[currentState][line[i]];
                     i++;
                 }
                 i--;
-                if ((isalpha(line[i]) || isalnum(line[i]) || line[i] == '_' || line[i] == 39))
-                {
-                    i++;
-                    while (i < line.length() && (isalpha(line[i]) || isalnum(line[i]) || line[i] == '_' || line[i] == 39))
-                    {
-                        token += line[i];
-                        i++;
-                    }
-                    i--;
-                }
-                Token *t = tokenizer(token);
-                tokens.push_back(*t);
-                currentState = 0;
-                token = "";
             }
-            else if (isalpha(line[i]) || isalnum(line[i]) || line[i] == '_' || line[i] == 39)
-            {
-                while (i < line.length() && (isalpha(line[i]) || isalnum(line[i]) || line[i] == '_' || line[i] == 39))
-                {
-                    token += line[i];
-                    i++;
-                }
-                if (token != "")
-                {
-                    i--;
-                    Token *t = tokenizer(token);
-                    tokens.push_back(*t);
-                    token = "";
-                    currentState = 0;
-                }
-            }
-            else
-            {
-                if (line[i] != ' ')
-                {
-                    token += line[i];
-                    Token *t = tokenizer(token);
-                    tokens.push_back(*t);
-                    token = "";
-                    currentState = 0;
-                }
-            }
+            t = tokenizer(token);
+            tokens.push_back(*t);
+            currentState = 0;
+            token = "";
         }
     }
+    file.close();
     return tokens;
 }
 
@@ -162,4 +134,5 @@ Token *LexicalAnalyzer::tokenizer(string token)
 
 LexicalAnalyzer::~LexicalAnalyzer()
 {
+    delete this->dfa;
 }
