@@ -1,12 +1,14 @@
 using namespace std;
 
+#define TRANSISTION_TABLE_SIZE 128
+
 #include <string>
 #include <fstream>
 
 class DFA
 {
 private:
-    int transitionTable[128][128];
+    int transitionTable[TRANSISTION_TABLE_SIZE][TRANSISTION_TABLE_SIZE];
     int initialState;
 
 public:
@@ -15,7 +17,7 @@ public:
     void saveTransitionTable(string path);
     void loadTransitionTable(string path);
     void addToken(string token);
-    int (*getTransitionTable())[128] { return this->transitionTable; }
+    int (*getTransitionTable())[TRANSISTION_TABLE_SIZE] { return this->transitionTable; }
     ~DFA();
 };
 
@@ -26,7 +28,7 @@ DFA::DFA()
 
 void DFA::init()
 {
-    for (int i = 0; i < 128; i++)
+    for (int i = 0; i < TRANSISTION_TABLE_SIZE; i++)
     {
         if (isalnum(i) || i == '_' || isalpha(i))
         {
@@ -37,7 +39,7 @@ void DFA::init()
             this->transitionTable[0][i] = -1;
         }
     }
-    for (int i = 0; i < 128; i++)
+    for (int i = 0; i < TRANSISTION_TABLE_SIZE; i++)
     {
         if (isalnum(i) || i == '_' || isalpha(i))
         {
@@ -48,9 +50,9 @@ void DFA::init()
             this->transitionTable[1][i] = -1;
         }
     }
-    for (int i = 2; i < 128; i++)
+    for (int i = 2; i < TRANSISTION_TABLE_SIZE; i++)
     {
-        for (int j = 0; j < 128; j++)
+        for (int j = 0; j < TRANSISTION_TABLE_SIZE; j++)
         {
             this->transitionTable[i][j] = -1;
         }
