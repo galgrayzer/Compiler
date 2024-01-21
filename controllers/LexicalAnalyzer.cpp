@@ -55,8 +55,7 @@ private:
 
     // Methods
     Token *tokenizer(string token);
-    string getToken(string line);
-
+    
 public:
     // Constructor and Destructor
     LexicalAnalyzer(char *path);
