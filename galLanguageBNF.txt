@@ -1,10 +1,37 @@
-<digit> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
-<integer> ::= <digit> | <digit> <integer>
-<operator> ::= + | - | * | / | % | = | != | == | < | > | <= | >= | && | || | ! | & | |
-<char> ::= ascii(0) | ascii(1) | ... | ascii(255)
-<types> ::= int | char | bool
-<variable> ::= <types> <identifier>
-<loop> ::= while ( <expression> ) { <statement> } | for ( <expression> ; <expression> ; <expression> ) { <statement> }
-<expression> ::= bool | <identifier> | <integer> | <char> | <expression> <operator> <expression> | ( <expression> )
-<if> :== if ( <expression> ) { <statement> } | if ( <expression> ) { <statement> } else { <statement> }
-<statement> ::= <variable> ; | <variable> = <expression> ; | <loop> | <if> | <statement> <statement> | <integer> <operator> <integer>
+<declaration> ::= <type> <identifier>;
+
+<type> ::= int | char | bool
+
+<identifier> ::= <letter> | <identifier> <letter> | <identifier> <digit> | <identifier> <underscore>
+
+<underscore> ::= _
+
+<letter> ::= a | b | c | ... | z | A | B | C | ... | Z
+
+<digit> ::= 0 | 1 | 2 | ... | 9
+
+<assignment> ::= <identifier> = <expression>;
+
+<expression> ::= <term> | <expression> <operator> <term>
+
+<term> ::= <identifier> | <number> | <char>
+
+<operator> ::= + | - | * | / | % | == | != | < | > | <= | >= | && | || | ! | & | | | ^ | ~
+
+<number> ::= <digit> | <number> <digit>
+
+<char> ::= ' <character> '
+
+<character> ::= <letter> | <digit> | <symbol>
+
+<symbol> ::= ! | @ | # | $ | % | ^ | & | * | ( | ) | _ | + | - | = | { | } | [ | ] | | | : | ; | " | < | > | ? | , | . | /
+
+<if> ::= if ( <condition> ) <statement>
+
+<condition> ::= <expression> <operator> <expression> | <condition> <operator> <condition> | ( <condition> )
+
+<while> ::= while ( <condition> ) <statement>
+
+<for> ::= for ( <assignment> ; <condition> ; <assignment> ) <statement>
+
+<statement> ::= <declaration> | <assignment> | <if> | <while> | <for> | { <statement> } | <expression>;

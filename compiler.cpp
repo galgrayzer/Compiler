@@ -2,6 +2,7 @@ using namespace std;
 
 #include <iostream>
 
+#include "./controllers/SyntacticAnalyzer.cpp"
 #include "./controllers/LexicalAnalyzer.cpp"
 
 void printTokens(list<Token> tokens)
@@ -14,10 +15,11 @@ void printTokens(list<Token> tokens)
 
 int main(int argc, char const *argv[])
 {
-    const char *FILE_PATH = "main.gal"; //argv[1];
+    const char *FILE_PATH = "main.gal"; // argv[1];
     LexicalAnalyzer *lex = new LexicalAnalyzer((char *)FILE_PATH);
     list<Token> tokens = lex->lexer();
     printTokens(tokens);
+    // SyntacticAnalyzer *syn = new SyntacticAnalyzer(tokens);
+    // cout << syn->parser() << endl;
     return 0;
 }
-

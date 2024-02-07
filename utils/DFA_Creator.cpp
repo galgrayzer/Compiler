@@ -1,9 +1,9 @@
 using namespace std;
 
 #include <iostream>
-#include "../models/DFA.cpp"
+#include "../models/lexer/LexerDFA.cpp"
 
-int main(int argc, char const *argv[])
+void createLexerDfa()
 {
     DFA *dfa = new DFA();
     dfa->init();
@@ -30,5 +30,10 @@ int main(int argc, char const *argv[])
     dfa->addToken("}");
     dfa->addToken(";");
     dfa->saveTransitionTable("../DFAs/lexer.txt");
+}
+
+int main(int argc, char const *argv[])
+{
+    createLexerDfa();
     return 0;
 }

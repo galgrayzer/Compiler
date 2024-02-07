@@ -9,7 +9,7 @@ using namespace std;
 #include <iostream>
 
 #include "../models/Token.cpp"
-#include "../models/DFA.cpp"
+#include "../models/lexer/LexerDFA.cpp"
 
 class LexicalAnalyzer
 {
@@ -55,7 +55,7 @@ private:
 
     // Methods
     Token *tokenizer(string token);
-    
+
 public:
     // Constructor and Destructor
     LexicalAnalyzer(char *path);
@@ -80,24 +80,24 @@ list<Token> LexicalAnalyzer::lexer()
 {
     list<Token> tokens;
     ifstream file(this->filePath);
-    string line;
+    string line, token = "";
+    int(*transitionTable)[128] = this->dfa->getTransitionTable();
     while (getline(file, line))
     {
-        string token = "";
         Token *t;
         int currentState = 0;
         for (int i = 0; i < line.length(); i++)
         {
-            if (this->dfa->getTransitionTable()[currentState][line[i]] == -1)
+            if (transitionTable[currentState][line[i]] == -1)
             {
                 continue;
             }
-            if (this->dfa->getTransitionTable()[currentState][line[i]] != -1)
+            if (transitionTable[currentState][line[i]] != -1)
             {
-                while (this->dfa->getTransitionTable()[currentState][line[i]] != -1)
+                while (transitionTable[currentState][line[i]] != -1)
                 {
                     token += line[i];
-                    currentState = this->dfa->getTransitionTable()[currentState][line[i]];
+                    currentState = transitionTable[currentState][line[i]];
                     i++;
                 }
                 i--;
