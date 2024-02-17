@@ -4,7 +4,6 @@ using namespace std;
 
 #include <fstream>
 #include <list>
-#include <unordered_map>
 #include <regex>
 #include <iostream>
 
@@ -17,44 +16,9 @@ private:
     // Attributes
     char *filePath;
     DFA *dfa;
-    const unordered_map<string, string> DEFINED_VALUES = {
-        {"+", "OPERATOR"},
-        {"++", "OPERATOR"},
-        {"-", "OPERATOR"},
-        {"--", "OPERATOR"},
-        {"*", "OPERATOR"},
-        {"/", "OPERATOR"},
-        {"%", "OPERATOR"},
-        {"=", "OPERATOR"},
-        {"==", "OPERATOR"},
-        {"!=", "OPERATOR"},
-        {"<", "OPERATOR"},
-        {">", "OPERATOR"},
-        {"<=", "OPERATOR"},
-        {">=", "OPERATOR"},
-        {"&&", "OPERATOR"},
-        {"||", "OPERATOR"},
-        {"!", "OPERATOR"},
-        {"++", "OPERATOR"},
-        {"--", "OPERATOR"},
-        {"(", "SEPERATOR"},
-        {")", "SEPERATOR"},
-        {"{", "SEPERATOR"},
-        {"}", "SEPERATOR"},
-        {";", "SEPERATOR"},
-        {"int", "KEYWORD"},
-        {"char", "KEYWORD"},
-        {"bool", "KEYWORD"},
-        {"if", "KEYWORD"},
-        {"else", "KEYWORD"},
-        {"while", "KEYWORD"},
-        {"for", "KEYWORD"},
-        {"true", "KEYWORD"},
-        {"false", "KEYWORD"},
-        {"out", "KEYWORD"}};
 
     // Methods
-    Token *tokenizer(string token);
+    Token *tokenizer(string token, int state);
 
 public:
     // Constructor and Destructor
@@ -72,10 +36,6 @@ LexicalAnalyzer::LexicalAnalyzer(char *path)
     this->dfa->loadTransitionTable(DFA_PATH);
 }
 
-// string LexicalAnalyzer::getToken(string line)
-// {
-// }
-
 list<Token> LexicalAnalyzer::lexer()
 {
     list<Token> tokens;
@@ -88,10 +48,6 @@ list<Token> LexicalAnalyzer::lexer()
         int currentState = 0;
         for (int i = 0; i < line.length(); i++)
         {
-            if (transitionTable[currentState][line[i]] == -1)
-            {
-                continue;
-            }
             if (transitionTable[currentState][line[i]] != -1)
             {
                 while (transitionTable[currentState][line[i]] != -1)
@@ -101,32 +57,38 @@ list<Token> LexicalAnalyzer::lexer()
                     i++;
                 }
                 i--;
+                t = tokenizer(token, currentState);
+                tokens.push_back(*t);
+                currentState = 0;
+                token = "";
             }
-            t = tokenizer(token);
-            tokens.push_back(*t);
-            currentState = 0;
-            token = "";
         }
     }
     file.close();
     return tokens;
 }
 
-Token *LexicalAnalyzer::tokenizer(string token)
+Token *LexicalAnalyzer::tokenizer(string token, int state)
 {
     Token *t = new Token();
     t->token = token;
-    if (this->DEFINED_VALUES.find(token) != this->DEFINED_VALUES.end())
+    switch (this->dfa->getStateArray()[state])
     {
-        t->type = this->DEFINED_VALUES.at(token);
-    }
-    else if (regex_match(token, regex("[0-9]+")) || regex_match(token, regex("'.'")))
-    {
-        t->type = "LITERAL";
-    }
-    else
-    {
+    case KEYWORD:
+        t->type = "KEYWORD";
+        break;
+    case OPERATOR:
+        t->type = "OPERATOR";
+        break;
+    case SEPERATOR:
+        t->type = "SEPERATOR";
+        break;
+    case IDENTIFIER:
         t->type = "IDENTIFIER";
+        break;
+    case LITERAL:
+        t->type = "LITERAL";
+        break;
     }
     return t;
 }
