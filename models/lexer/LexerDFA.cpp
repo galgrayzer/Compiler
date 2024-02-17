@@ -93,9 +93,11 @@ void DFA::loadTransitionTable(string path)
     ifstream file;
     file.open(path);
     string line;
+    int temp = 0;
     for (int i = 0; i < TRANSISTION_TABLE_SIZE; i++)
     {
         getline(file, line);
+        temp++;
         int j = 0;
         string token = "";
         for (int k = 0; k < line.length(); k++)
@@ -121,8 +123,7 @@ void DFA::loadTransitionTable(string path)
         if (line[k] == ',')
         {
             this->stateArray[j] = token;
-            token =
-                "";
+            token = "";
             j++;
         }
         else
