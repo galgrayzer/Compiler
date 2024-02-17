@@ -5,20 +5,22 @@ using namespace std;
 #include <string>
 #include <fstream>
 
+#include "../Token.cpp"
+
 class DFA
 {
 private:
     int transitionTable[TRANSISTION_TABLE_SIZE][TRANSISTION_TABLE_SIZE];
-    string stateArray[TRANSISTION_TABLE_SIZE];
+    int stateArray[TRANSISTION_TABLE_SIZE];
     int initialState;
 
 public:
     DFA();
     void saveTransitionTable(string path);
     void loadTransitionTable(string path);
-    void addToken(string token, string type);
+    void addToken(string token, int type);
     int (*getTransitionTable())[TRANSISTION_TABLE_SIZE] { return this->transitionTable; }
-    string *getStateArray() { return this->stateArray; }
+    int *getStateArray() { return this->stateArray; }
     ~DFA();
 };
 
@@ -34,24 +36,21 @@ DFA::DFA()
             else
                 this->transitionTable[i][j] = -1;
         }
-    }
-    for (int i = 0; i < TRANSISTION_TABLE_SIZE; i++)
-    {
-        if ((isalpha(i)))
+        if ((isdigit(i)))
         {
             this->transitionTable[0][i] = TRANSISTION_TABLE_SIZE - 1;
             this->transitionTable[TRANSISTION_TABLE_SIZE - 1][i] = TRANSISTION_TABLE_SIZE - 1;
         }
         else
             transitionTable[TRANSISTION_TABLE_SIZE - 1][i] = -1;
+        this->stateArray[i] = IDENTIFIER;
     }
-    this->stateArray[TRANSISTION_TABLE_SIZE - 1] = "LITERAL";
-    this->stateArray[TRANSISTION_TABLE_SIZE - 2] = "IDENTIFIER";
+    this->stateArray[TRANSISTION_TABLE_SIZE - 1] = LITERAL;
 }
 
-void DFA::addToken(string token, string type)
+void DFA::addToken(string token, int type)
 {
-    if (this->transitionTable[0][token[0]] == -1 || this->transitionTable[0][token[0]] == TRANSISTION_TABLE_SIZE - 1)
+    if (this->transitionTable[0][token[0]] == -1 || this->transitionTable[0][token[0]] == TRANSISTION_TABLE_SIZE - 2)
     {
         this->transitionTable[0][token[0]] = this->initialState;
         this->initialState++;
@@ -59,7 +58,7 @@ void DFA::addToken(string token, string type)
     int currentState = this->transitionTable[0][token[0]];
     for (int i = 1; i < token.length(); i++)
     {
-        if (this->transitionTable[currentState][token[i]] == -1 || this->transitionTable[currentState][token[i]] == TRANSISTION_TABLE_SIZE - 1)
+        if (this->transitionTable[currentState][token[i]] == -1 || this->transitionTable[currentState][token[i]] == TRANSISTION_TABLE_SIZE - 2)
         {
             this->transitionTable[currentState][token[i]] = this->initialState;
             this->initialState++;
@@ -93,14 +92,12 @@ void DFA::loadTransitionTable(string path)
     ifstream file;
     file.open(path);
     string line;
-    int temp = 0;
-    for (int i = 0; i < TRANSISTION_TABLE_SIZE; i++)
+    int i, k, j = 0;
+    string token = "";
+    for (i = 0; i < TRANSISTION_TABLE_SIZE; i++)
     {
         getline(file, line);
-        temp++;
-        int j = 0;
-        string token = "";
-        for (int k = 0; k < line.length(); k++)
+        for (k = 0; k < line.length(); k++)
         {
             if (line[k] == ',')
             {
@@ -113,22 +110,21 @@ void DFA::loadTransitionTable(string path)
                 token += line[k];
             }
         }
-        i++;
     }
     getline(file, line);
-    int j = 0;
-    string token = "";
-    for (int k = 0; k < line.length(); k++)
+    j = 0;
+    string state = "";
+    for (i = 0; i < line.length(); i++)
     {
-        if (line[k] == ',')
+        if (line[i] == ',')
         {
-            this->stateArray[j] = token;
-            token = "";
+            this->stateArray[j] = stoi(state);
+            state = "";
             j++;
         }
         else
         {
-            token += line[k];
+            state += line[i];
         }
     }
     file.close();
