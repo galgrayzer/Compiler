@@ -1,1 +1,10 @@
-i;
+int intger  a = 3;
+for (int i=0; i<     10; i  ++  ) {
+    a = a + 1;
+}
+if ((((a --== 3)))) {
+    a = 4;
+}
+    else {
+    a        = 5;
+}

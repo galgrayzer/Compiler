@@ -48,10 +48,6 @@ list<Token> LexicalAnalyzer::lexer()
         int currentState = 0;
         for (int i = 0; i < line.length(); i++)
         {
-            if (transitionTable[currentState][line[i]] == -1)
-            {
-                continue;
-            }
             if (transitionTable[currentState][line[i]] != -1)
             {
                 while (transitionTable[currentState][line[i]] != -1)
@@ -61,11 +57,11 @@ list<Token> LexicalAnalyzer::lexer()
                     i++;
                 }
                 i--;
+                t = tokenizer(token, currentState);
+                tokens.push_back(*t);
+                currentState = 0;
+                token = "";
             }
-            t = tokenizer(token, currentState);
-            tokens.push_back(*t);
-            currentState = 0;
-            token = "";
         }
     }
     file.close();
