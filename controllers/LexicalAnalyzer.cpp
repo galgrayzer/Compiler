@@ -4,7 +4,6 @@ using namespace std;
 
 #include <fstream>
 #include <list>
-#include <unordered_map>
 #include <regex>
 #include <iostream>
 
@@ -17,44 +16,9 @@ private:
     // Attributes
     char *filePath;
     DFA *dfa;
-    const unordered_map<string, string> DEFINED_VALUES = {
-        {"+", "OPERATOR"},
-        {"++", "OPERATOR"},
-        {"-", "OPERATOR"},
-        {"--", "OPERATOR"},
-        {"*", "OPERATOR"},
-        {"/", "OPERATOR"},
-        {"%", "OPERATOR"},
-        {"=", "OPERATOR"},
-        {"==", "OPERATOR"},
-        {"!=", "OPERATOR"},
-        {"<", "OPERATOR"},
-        {">", "OPERATOR"},
-        {"<=", "OPERATOR"},
-        {">=", "OPERATOR"},
-        {"&&", "OPERATOR"},
-        {"||", "OPERATOR"},
-        {"!", "OPERATOR"},
-        {"++", "OPERATOR"},
-        {"--", "OPERATOR"},
-        {"(", "SEPERATOR"},
-        {")", "SEPERATOR"},
-        {"{", "SEPERATOR"},
-        {"}", "SEPERATOR"},
-        {";", "SEPERATOR"},
-        {"int", "KEYWORD"},
-        {"char", "KEYWORD"},
-        {"bool", "KEYWORD"},
-        {"if", "KEYWORD"},
-        {"else", "KEYWORD"},
-        {"while", "KEYWORD"},
-        {"for", "KEYWORD"},
-        {"true", "KEYWORD"},
-        {"false", "KEYWORD"},
-        {"out", "KEYWORD"}};
 
     // Methods
-    Token *tokenizer(string token);
+    Token *tokenizer(string token, int state);
 
 public:
     // Constructor and Destructor
@@ -71,10 +35,6 @@ LexicalAnalyzer::LexicalAnalyzer(char *path)
     this->dfa = new DFA();
     this->dfa->loadTransitionTable(DFA_PATH);
 }
-
-// string LexicalAnalyzer::getToken(string line)
-// {
-// }
 
 list<Token> LexicalAnalyzer::lexer()
 {
@@ -102,7 +62,7 @@ list<Token> LexicalAnalyzer::lexer()
                 }
                 i--;
             }
-            t = tokenizer(token);
+            t = tokenizer(token, currentState);
             tokens.push_back(*t);
             currentState = 0;
             token = "";
@@ -112,22 +72,11 @@ list<Token> LexicalAnalyzer::lexer()
     return tokens;
 }
 
-Token *LexicalAnalyzer::tokenizer(string token)
+Token *LexicalAnalyzer::tokenizer(string token, int state)
 {
     Token *t = new Token();
     t->token = token;
-    if (this->DEFINED_VALUES.find(token) != this->DEFINED_VALUES.end())
-    {
-        t->type = this->DEFINED_VALUES.at(token);
-    }
-    else if (regex_match(token, regex("[0-9]+")) || regex_match(token, regex("'.'")))
-    {
-        t->type = "LITERAL";
-    }
-    else
-    {
-        t->type = "IDENTIFIER";
-    }
+    t->type = this->dfa->getStateArray()[state];
     return t;
 }
 
