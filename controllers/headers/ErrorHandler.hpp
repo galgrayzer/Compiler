@@ -12,6 +12,6 @@ private:
 
 public:
     ErrorHandler();
-    void lexicalError();
+    void lexicalError(string token, int line);
     ~ErrorHandler();
 };

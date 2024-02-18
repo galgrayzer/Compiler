@@ -2,7 +2,7 @@ using namespace std;
 
 #include <iostream>
 #include "../models/lexer/LexerDFA.cpp"
-#include "../models/Token.cpp"
+#include "../models/headers/Token.hpp"
 
 void createLexerDfa()
 {

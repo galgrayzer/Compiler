@@ -10,9 +10,9 @@ void ErrorHandler::handle(string message)
     exit(1);
 }
 
-void ErrorHandler::lexicalError()
+void ErrorHandler::lexicalError(string token, int line)
 {
-    handle("Lexical error");
+    handle("Invalid token: " + token + " at line: " + to_string(line));
 }
 
 ErrorHandler::~ErrorHandler()

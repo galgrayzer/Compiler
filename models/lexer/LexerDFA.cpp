@@ -9,7 +9,7 @@ DFA::DFA()
         {
             this->transitionTable[0][i] = TRANSISTION_TABLE_SIZE - 2;
             this->transitionTable[TRANSISTION_TABLE_SIZE - 2][i] = TRANSISTION_TABLE_SIZE - 2;
-            this->transitionTable[TRANSISTION_TABLE_SIZE - 1][i] = -1;
+            this->transitionTable[TRANSISTION_TABLE_SIZE - 1][i] = -2;
         }
         else if (isdigit(i))
         {
@@ -52,11 +52,11 @@ void DFA::addToken(string token, int type)
     if (this->transitionTable[0][token[0]] == -1 || this->transitionTable[0][token[0]] == TRANSISTION_TABLE_SIZE - 2)
     {
         this->transitionTable[0][token[0]] = this->initialState;
-        this->initialState++;
         if (type == KEYWORD)
         {
             this->fillRowIdentifier(initialState);
         }
+        this->initialState++;
     }
     int currentState = this->transitionTable[0][token[0]];
     for (int i = 1; i < token.length(); i++)

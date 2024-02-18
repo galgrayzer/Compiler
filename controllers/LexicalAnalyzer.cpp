@@ -14,8 +14,10 @@ list<Token> LexicalAnalyzer::lexer()
     ifstream file(this->filePath);
     string line, token = "";
     int(*transitionTable)[128] = this->dfa->getTransitionTable();
+    int lineCount = 0;
     while (getline(file, line))
     {
+        lineCount++;
         Token *t;
         int currentState = 0;
         for (int i = 0; i < line.length(); i++)
@@ -26,6 +28,8 @@ list<Token> LexicalAnalyzer::lexer()
                 {
                     token += line[i];
                     currentState = transitionTable[currentState][line[i]];
+                    if (currentState == -2)
+                        this->error->lexicalError(token, lineCount);
                     i++;
                 }
                 i--;
