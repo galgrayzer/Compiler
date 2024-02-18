@@ -1,36 +1,8 @@
-using namespace std;
+#include "./headers/LexicalAnalyzer.hpp"
 
-#define DFA_PATH "./DFAs/lexer.txt"
-
-#include <fstream>
-#include <list>
-#include <regex>
-#include <iostream>
-
-#include "../models/Token.cpp"
-#include "../models/lexer/LexerDFA.cpp"
-
-class LexicalAnalyzer
+LexicalAnalyzer::LexicalAnalyzer(char *path, ErrorHandler *error)
 {
-private:
-    // Attributes
-    char *filePath;
-    DFA *dfa;
-
-    // Methods
-    Token *tokenizer(string token, int state);
-
-public:
-    // Constructor and Destructor
-    LexicalAnalyzer(char *path);
-    ~LexicalAnalyzer();
-
-    // Methods
-    list<Token> lexer();
-};
-
-LexicalAnalyzer::LexicalAnalyzer(char *path)
-{
+    this->error = error;
     this->filePath = path;
     this->dfa = new DFA();
     this->dfa->loadTransitionTable(DFA_PATH);

@@ -1,5 +1,4 @@
-#ifndef TOKEN_H
-#define TOKEN_H
+#pragma once
 
 using namespace std;
 
@@ -19,4 +18,3 @@ struct Token
     string token;
     string type;
 } typedef Token;
-#endif

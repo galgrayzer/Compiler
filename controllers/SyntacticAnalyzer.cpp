@@ -1,19 +1,4 @@
-#include <list>
-
-#include "../models/Token.cpp"
-#include "../models/AST.cpp"
-#include "../models/parser/Stack.cpp"
-
-class SyntacticAnalyzer
-{
-private:
-    list<Token> tokens;
-
-public:
-    SyntacticAnalyzer(list<Token> tokens);
-    int parser();
-    ~SyntacticAnalyzer();
-};
+#include "./headers/SyntacticAnalyzer.hpp"
 
 SyntacticAnalyzer::SyntacticAnalyzer(list<Token> tokens)
 {
