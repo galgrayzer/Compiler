@@ -2,7 +2,7 @@
 
 using namespace std;
 
-#define DFA_PATH "./DFAs/lexer.txt"
+#define DFA_PATH "./DFAs/lexer/lexerDFA.txt"
 
 #include <fstream>
 #include <list>

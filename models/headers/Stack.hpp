@@ -16,7 +16,7 @@ public:
     ~Stack();
 
     void push(T element);
-    T pop();
+    T *pop();
     T peek();
     bool isEmpty();
     bool isFull();
@@ -44,7 +44,7 @@ void Stack<T>::push(T element)
 }
 
 template <class T>
-T Stack<T>::pop()
+T *Stack<T>::pop()
 {
     if (this->isEmpty())
     {
@@ -53,7 +53,7 @@ T Stack<T>::pop()
     }
     else
     {
-        return this->stack[this->top--];
+        return &this->stack[this->top--];
     }
 }
 

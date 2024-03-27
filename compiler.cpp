@@ -21,7 +21,8 @@ int main(int argc, char const *argv[])
     LexicalAnalyzer *lex = new LexicalAnalyzer((char *)FILE_PATH, error);
     list<Token> tokens = lex->lexer();
     printTokens(tokens);
-    // SyntacticAnalyzer *syn = new SyntacticAnalyzer(tokens);
-    // cout << syn->parser() << endl;
+    SyntacticAnalyzer *syn = new SyntacticAnalyzer(tokens, error);
+    AST *ast = syn->parser("./DFAs/parser/parserDFA.txt", "./DFAs/parser/parserRules.txt");
+    cout << "done" << endl;
     return 0;
 }

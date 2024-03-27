@@ -13,5 +13,6 @@ private:
 public:
     ErrorHandler();
     void lexicalError(string token, int line);
+    void syntaxError(string token);
     ~ErrorHandler();
 };

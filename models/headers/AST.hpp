@@ -1,7 +1,8 @@
 #pragma once
 
-#include <stdlib.h>
+using namespace std;
 
+#include <vector>
 #include "./Token.hpp"
 
 class AST
@@ -9,22 +10,23 @@ class AST
 private:
     // Attributes
     Token *root;
-    AST **children;
+    vector<AST *> *children;
     int size;
 
 public:
     // Constructors and Destructor
+    AST();
     AST(Token *root);
-    AST(Token *root, AST **children, int size);
+    AST(Token *root, vector<AST *> *children, int size);
     ~AST();
 
     // Methods
     void setRoot(Token *root);
     Token *getRoot();
-    AST **getChildren();
+    vector<AST *> *getChildren();
     AST *getChild(int index);
     int getSize();
-    void setChildren(AST **children);
+    void setChildren(vector<AST *> *children);
     void setChild(AST *child, int index);
     void pushChild(AST *child);
 };

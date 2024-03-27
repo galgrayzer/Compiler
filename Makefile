@@ -2,14 +2,16 @@
 CC = g++
 
 # Files
-FILES = compiler.cpp controllers/ErrorHandler.cpp controllers/LexicalAnalyzer.cpp controllers/SyntacticAnalyzer.cpp models/AST.cpp models/lexer/LexerDFA.cpp
+ERROR = controllers/ErrorHandler.cpp
+LEXER = controllers/LexicalAnalyzer.cpp models/lexer/LexerDFA.cpp
+PARSER = controllers/SyntacticAnalyzer.cpp models/parser/ParserDFA.cpp models/AST.cpp
 
 # Output
 OUT = compiler
 
 # Build
 build:
-	$(CC) $(FILES) -o $(OUT)
+	$(CC) compiler.cpp $(LEXER) $(PARSER) $(ERROR) -o $(OUT)
 
 # Clean
 clean:

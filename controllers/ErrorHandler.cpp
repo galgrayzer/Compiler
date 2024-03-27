@@ -15,6 +15,11 @@ void ErrorHandler::lexicalError(string token, int line)
     handle("Invalid token: " + token + " at line: " + to_string(line));
 }
 
+void ErrorHandler::syntaxError(string token)
+{
+    handle("Syntax error: " + token);
+}
+
 ErrorHandler::~ErrorHandler()
 {
 }

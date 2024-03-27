@@ -48,24 +48,7 @@ Token *LexicalAnalyzer::tokenizer(string token, int state)
 {
     Token *t = new Token();
     t->token = token;
-    switch (this->dfa->getStateArray()[state])
-    {
-    case KEYWORD:
-        t->type = "KEYWORD";
-        break;
-    case OPERATOR:
-        t->type = "OPERATOR";
-        break;
-    case SEPERATOR:
-        t->type = "SEPERATOR";
-        break;
-    case IDENTIFIER:
-        t->type = "IDENTIFIER";
-        break;
-    case LITERAL:
-        t->type = "LITERAL";
-        break;
-    }
+    t->type = this->dfa->getStateArray()[state];
     return t;
 }
 

@@ -4,17 +4,29 @@ using namespace std;
 
 #include <string>
 
-enum TokenType
+enum Terminal
 {
-    KEYWORD,
+    TYPE,
+    BOOLEAN,
+    WHILE,
+    FOR,
+    OUT,
+    IF,
+    ELSE,
     OPERATOR,
-    SEPERATOR,
+    EQUAL,
+    CURLY_BRACKET_OPEN,
+    CURLY_BRACKET_CLOSE,
+    BARCKET_OPEN,
+    BARCKET_CLOSE,
+    SEMICOLON,
     IDENTIFIER,
-    LITERAL
+    LITERAL,
+    END
 };
 
 struct Token
 {
     string token;
-    string type;
+    int type;
 } typedef Token;

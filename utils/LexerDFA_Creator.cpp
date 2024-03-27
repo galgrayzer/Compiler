@@ -7,18 +7,18 @@ using namespace std;
 void createLexerDfa()
 {
     DFA *dfa = new DFA();
-    dfa->addToken("int", KEYWORD);
-    dfa->addToken("char", KEYWORD);
-    dfa->addToken("bool", KEYWORD);
-    dfa->addToken("if", KEYWORD);
-    dfa->addToken("else", KEYWORD);
-    dfa->addToken("while", KEYWORD);
-    dfa->addToken("for", KEYWORD);
-    dfa->addToken("true", KEYWORD);
-    dfa->addToken("false", KEYWORD);
-    dfa->addToken("out", KEYWORD);
-    dfa->addToken("++", OPERATOR);
-    dfa->addToken("--", OPERATOR);
+    dfa->addToken("int", TYPE);
+    dfa->addToken("char", TYPE);
+    dfa->addToken("bool", TYPE);
+    dfa->addToken("if", IF);
+    dfa->addToken("else", ELSE);
+    dfa->addToken("while", WHILE);
+    dfa->addToken("for", FOR);
+    dfa->addToken("true", BOOLEAN);
+    dfa->addToken("false", BOOLEAN);
+    dfa->addToken("out", OUT);
+    // dfa->addToken("++", OPERATOR);
+    // dfa->addToken("--", OPERATOR);
     dfa->addToken("==", OPERATOR);
     dfa->addToken("!=", OPERATOR);
     dfa->addToken("<=", OPERATOR);
@@ -31,15 +31,15 @@ void createLexerDfa()
     dfa->addToken("*", OPERATOR);
     dfa->addToken("/", OPERATOR);
     dfa->addToken("%", OPERATOR);
-    dfa->addToken("=", OPERATOR);
+    dfa->addToken("=", EQUAL);
     dfa->addToken("<", OPERATOR);
     dfa->addToken(">", OPERATOR);
-    dfa->addToken("(", SEPERATOR);
-    dfa->addToken(")", SEPERATOR);
-    dfa->addToken("{", SEPERATOR);
-    dfa->addToken("}", SEPERATOR);
-    dfa->addToken(";", SEPERATOR);
-    dfa->saveTransitionTable("../DFAs/lexer.txt");
+    dfa->addToken("(", BARCKET_OPEN);
+    dfa->addToken(")", BARCKET_CLOSE);
+    dfa->addToken("{", CURLY_BRACKET_OPEN);
+    dfa->addToken("}", CURLY_BRACKET_CLOSE);
+    dfa->addToken(";", SEMICOLON);
+    dfa->saveTransitionTable("../DFAs/lexer/lexerDFA.txt");
 }
 
 int main(int argc, char const *argv[])

@@ -1,37 +1,32 @@
-<declaration> ::= <type> <identifier>;
+<program> ::= <statement_list>
 
-<type> ::= int | char | bool
+<statement_list> ::= <statement> | <statement_list> <statement>
 
-<identifier> ::= <letter> | <identifier> <letter> | <identifier> <digit> | <identifier> <underscore>
+<statement> ::= <declaration>
+              | <assignment>
+              | <conditional>
+              | <loop>
+              | <outfunc>
+              | <expression>
 
-<underscore> ::= _
+<declaration> ::= TYPE IDENTIFIER SEMICOLOM
 
-<letter> ::= a | b | c | ... | z | A | B | C | ... | Z
+<assignment> ::= IDENTIFIER EQUAL <expression> SEMICOLOM
 
-<digit> ::= 0 | 1 | 2 | ... | 9
+<expression> ::= <term> 
+               | <expression> OPERATOR <term>
 
-<assignment> ::= <identifier> = <expression>;
+<term> ::= IDENTIFIER
+         | LITERAL
+         | BRACKET_OPEN <expression> BRACKET_CLOSE
+                        
+<conditional> ::= IF BRACKET_OPEN <condition> BRACKET_CLOSE CURLY_BRACKET_OPEN <statement_list> CURLY_BRACKET_CLOSE
+                | <conditional> ELSE CURLY_BRACKET_OPEN <statement_list> CURLY_BRACKET_CLOSE
 
-<expression> ::= <term> | <expression> <operator> <term>
+<condition> ::= <expression>
+              | BOOLEAN
 
-<term> ::= <identifier> | <number> | <char>
+<loop> ::= WHILE BRACKET_OPEN <condition> BRACKET_CLOSE CURLY_BRACKET_OPEN <statement_list> CURLY_BRACKET_CLOSE
+          | FOR BRACKET_OPEN <literal> BRACKET_CLOSE CURLY_BRACKET_OPEN <statement_list> CURLY_BRACKET_CLOSE
 
-<operator> ::= + | - | * | / | % | == | != | < | > | <= | >= | && | || | ! | & | | | ^ | ~
-
-<number> ::= <digit> | <number> <digit>
-
-<char> ::= ' <character> '
-
-<character> ::= <letter> | <digit> | <symbol>
-
-<symbol> ::= ! | @ | # | $ | % | ^ | & | * | ( | ) | _ | + | - | = | { | } | [ | ] | | | : | ; | " | < | > | ? | , | . | /
-
-<if> ::= if ( <condition> ) <statement>
-
-<condition> ::= <expression> <operator> <expression> | <condition> <operator> <condition> | ( <condition> )
-
-<while> ::= while ( <condition> ) <statement>
-
-<for> ::= for ( <assignment> ; <condition> ; <assignment> ) <statement>
-
-<statement> ::= <declaration> | <assignment> | <if> | <while> | <for> | { <statement> } | <expression>;
+<outfunc> ::= OUT BRACKET_OPEN <expression> BRACKET_CLOSE SEMICOLOM

@@ -1,11 +1,20 @@
 #include "./headers/AST.hpp"
 
+AST::AST()
+{
+    this->root = NULL;
+    this->children = new vector<AST *>();
+    this->size = 0;
+}
+
 AST::AST(Token *root)
 {
     this->root = root;
+    this->children = new vector<AST *>();
+    this->size = 0;
 }
 
-AST::AST(Token *root, AST **children, int size)
+AST::AST(Token *root, vector<AST *> *children, int size)
 {
     this->root = root;
     this->children = children;
@@ -22,7 +31,7 @@ Token *AST::getRoot()
     return this->root;
 }
 
-AST **AST::getChildren()
+vector<AST *> *AST::getChildren()
 {
     return this->children;
 }
@@ -34,26 +43,23 @@ int AST::getSize()
 
 AST *AST::getChild(int index)
 {
-    if (index >= this->size)
-        return NULL;
-    return this->children[index];
+    return this->children->at(index);
 }
 
-void AST::setChildren(AST **children)
+void AST::setChildren(vector<AST *> *children)
 {
     this->children = children;
 }
 
 void AST::setChild(AST *child, int index)
 {
-    this->children[index] = child;
+    this->children->at(index) = child;
 }
 
 void AST::pushChild(AST *child)
 {
+    this->children->push_back(child);
     this->size++;
-    this->children = (AST **)realloc(this->children, this->size * sizeof(AST *));
-    this->children[this->size - 1] = child;
 }
 
 AST::~AST()
