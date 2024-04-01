@@ -16,6 +16,7 @@ private:
     int stateArray[TRANSISTION_TABLE_SIZE];
     int initialState;
     void fillRowIdentifier(int row);
+    bool needIdentifierFill(int type);
 
 public:
     DFA();

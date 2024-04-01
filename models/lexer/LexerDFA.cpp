@@ -1,29 +1,40 @@
 #include "./headres/LexerDFA.hpp"
 
+/**
+ * @brief Default constructor to initialize the DFA with default transition rules.
+ */
 DFA::DFA()
 {
+    // Initialize initial state
     this->initialState = 1;
+
+    // Set transition rules for alphabets, digits, and underscores
     for (int i = 0; i < TRANSISTION_TABLE_SIZE; i++)
     {
         if ((isalpha(i) || i == '_'))
         {
+            // Transition rules for identifiers
             this->transitionTable[0][i] = TRANSISTION_TABLE_SIZE - 2;
             this->transitionTable[TRANSISTION_TABLE_SIZE - 2][i] = TRANSISTION_TABLE_SIZE - 2;
             this->transitionTable[TRANSISTION_TABLE_SIZE - 1][i] = -2;
         }
         else if (isdigit(i))
         {
+            // Transition rules for numeric literals
             this->transitionTable[0][i] = TRANSISTION_TABLE_SIZE - 1;
             this->transitionTable[TRANSISTION_TABLE_SIZE - 1][i] = TRANSISTION_TABLE_SIZE - 1;
             this->transitionTable[TRANSISTION_TABLE_SIZE - 2][i] = TRANSISTION_TABLE_SIZE - 2;
         }
         else
         {
+            // Default transition rules for other characters
             this->transitionTable[0][i] = -1;
             this->transitionTable[TRANSISTION_TABLE_SIZE - 2][i] = -1;
             this->transitionTable[TRANSISTION_TABLE_SIZE - 1][i] = -1;
         }
     }
+
+    // Initialize state array
     for (int i = 1; i < TRANSISTION_TABLE_SIZE - 2; i++)
     {
         for (int j = 0; j < TRANSISTION_TABLE_SIZE; j++)
@@ -36,6 +47,11 @@ DFA::DFA()
     this->stateArray[TRANSISTION_TABLE_SIZE - 1] = LITERAL;
 }
 
+/**
+ * @brief Fills a specific row in the transition table for identifier tokens.
+ *
+ * @param row The row index to be filled.
+ */
 void DFA::fillRowIdentifier(int row)
 {
     for (int i = 0; i < TRANSISTION_TABLE_SIZE; i++)
@@ -47,12 +63,23 @@ void DFA::fillRowIdentifier(int row)
     }
 }
 
+bool DFA::needIdentifierFill(int type)
+{
+    return type == TYPE || type == IF || type == ELSE || type == BOOLEAN || type == WHILE || type == FOR || type == OUT;
+}
+
+/**
+ * @brief Adds a token to the DFA and updates transition rules accordingly.
+ *
+ * @param token The token to be added.
+ * @param type The type of the token.
+ */
 void DFA::addToken(string token, int type)
 {
-    if (this->transitionTable[0][token[0]] == -1 || this->transitionTable[0][token[0]] == TRANSISTION_TABLE_SIZE - 2)
+    if (this->transitionTable[0][token[0]] == -1 || this->transitionTable[0][token[0]] == TRANSISTION_TABLE_SIZE - 2) // If the transition is not defined
     {
-        this->transitionTable[0][token[0]] = this->initialState;
-        if (type < OPERATOR)
+        this->transitionTable[0][token[0]] = this->initialState; // Define the transition
+        if (needIdentifierFill(type))
         {
             this->fillRowIdentifier(initialState);
         }
@@ -65,7 +92,7 @@ void DFA::addToken(string token, int type)
         {
             this->transitionTable[currentState][token[i]] = this->initialState;
             this->initialState++;
-            if (type < OPERATOR)
+            if (needIdentifierFill(type))
             {
                 this->fillRowIdentifier(initialState);
             }
@@ -75,6 +102,11 @@ void DFA::addToken(string token, int type)
     this->stateArray[currentState] = type;
 }
 
+/**
+ * @brief Saves the transition table to a file.
+ *
+ * @param path The path to the file where the transition table will be saved.
+ */
 void DFA::saveTransitionTable(string path)
 {
     ofstream file;
@@ -94,6 +126,11 @@ void DFA::saveTransitionTable(string path)
     file.close();
 }
 
+/**
+ * @brief Loads the transition table from a file.
+ *
+ * @param path The path to the file from where the transition table will be loaded.
+ */
 void DFA::loadTransitionTable(string path)
 {
     ifstream file;
