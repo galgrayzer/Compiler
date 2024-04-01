@@ -4,6 +4,7 @@
 #include "./Gramer.hpp"
 #include <fstream>
 #include <list>
+#include <set>
 #include <iostream>
 
 #define TERMINAL 17
@@ -12,7 +13,8 @@
 
 enum NonTerminal
 {
-    STATEMENT_LIST = TERMINAL,
+    PROGRAM = TERMINAL,
+    STATEMENT_LIST,
     STATEMENT,
     DECLARATION,
     ASSIGNMENT,
@@ -21,8 +23,7 @@ enum NonTerminal
     CONDITIONAL,
     CONDITION,
     LOOP,
-    OUTFUNC,
-    PROGRAM
+    OUTFUNC
 };
 
 enum Action
@@ -30,7 +31,6 @@ enum Action
     SHIFT = 100,
     REDUCE = 200,
     ACCEPT = 300,
-    ERROR = 400
 };
 
 class ParserDFA
@@ -43,8 +43,7 @@ private:
     int becomeSet[NONE_TERMINAL][NONE_TERMINAL];
     list<Gramer> *grammarRules;
 
-    void startingPhase(int final);
-    void fillExpansions(int state, int final);
+    list<Gramer> *closure(list<Gramer> *i, int handled[NONE_TERMINAL] = NULL);
 
 public:
     ParserDFA();

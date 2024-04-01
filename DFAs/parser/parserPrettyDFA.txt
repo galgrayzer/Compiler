@@ -1,18 +1,18 @@
 TY  BO  WH  FO  OU  IF  EL  OP  =   {   }   (   )   ;   ID  LI  $   SL  ST  DE  AS  EX  TE  CL  CO  LO  OU
-                                            S11         S2  S10                 1   7   6                       
-                                                                A0                                              
-                            R3  S3              R3  R3                                                          
-                                                        S2                          4                           
-                                                    S5                                                          
-                                                                R0                                               
-                            R1                  R1  R1                                                          
-                            S8                                                                                  
-                                                        S2                              9                       
-                            R2                  R2  R2                                                          
-                            R4                  R4  R4                                                          
-                                            S11         S2  S10                     12  6                       
-                                                S13                                                             
-                            R5                  R5  R5                                                          
+                                                                                                                
+                                                                                                                
+                                                                                                                
+                                                                                                                
+                                                                                                                
+                                                                                                                
+                                                                                                                
+                                                                                                                
+                                                                                                                
+                                                                                                                
+                                                                                                                
+                                                                                                                
+                                                                                                                
+                                                                                                                
                                                                                                                 
                                                                                                                 
                                                                                                                 

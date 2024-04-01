@@ -27,11 +27,7 @@ void ParserDFA::AddGrammar(Gramer gramer)
     this->grammarRules->push_back(gramer);
     list<int>::iterator it;
     list<int> *right = &gramer.right;
-    if (right->front() < TERMINAL)
-    {
-        this->firstSet[gramer.nonTerminal - TERMINAL][right->front()] = 1;
-    }
-    else
+    if (right->front() > TERMINAL)
     {
         if (right->size() == 1)
         {
@@ -60,152 +56,51 @@ Gramer *ParserDFA::getGrammarRules()
     return rules;
 }
 
-void ParserDFA::startingPhase(int final)
+list<Gramer> *ParserDFA::closure(list<Gramer> *i, int handled_prev[NONE_TERMINAL])
 {
-    list<int> *nonTerminals = new list<int>();
-    for (int i = 0; i < NONE_TERMINAL; i++)
+    list<Gramer> *closure = new list<Gramer>(*i);
+    set<Gramer> *temp = new set<Gramer>();
+    list<Gramer>::iterator it, it2;
+    int handled[NONE_TERMINAL] = {0};
+
+    for (it = i->begin(); it != i->end(); it++)
     {
-        if (this->becomeSet[i][final - TERMINAL])
+        if (it->right.front() >= TERMINAL)
         {
-            nonTerminals->push_back(i + TERMINAL);
-            if (this->parserDFA[0][i + TERMINAL] == -1)
+            for (it2 = this->grammarRules->begin(); it2 != this->grammarRules->end(); it2++)
             {
-                this->parserDFA[0][i + TERMINAL] = initialState++;
-                for (int j = 0; j < TERMINAL; j++)
+                if (it2->nonTerminal == it->right.front() && (!handled_prev || handled_prev[it2->nonTerminal - TERMINAL] == 0))
                 {
-                    if (this->firstSet[i][j])
-                    {
-                        if (this->parserDFA[0][j] == -1)
-                        {
-                            this->parserDFA[0][j] = SHIFT + this->initialState++;
-                        }
-                    }
+                    handled[it2->nonTerminal - TERMINAL] = 1;
+                    temp->insert(*it2);
                 }
             }
-        }
-    }
-    for (int i = 0; i < TERMINAL; i++)
-    {
-        if (this->firstSet[final - TERMINAL][i])
-        {
-            if (this->parserDFA[0][i] == -1)
-            {
-                this->parserDFA[0][i] = SHIFT + this->initialState++;
-            }
-        }
-    }
-    list<int>::iterator it;
-    for (it = nonTerminals->begin(); it != nonTerminals->end(); it++)
-    {
-        startingPhase(*it);
-    }
-}
 
-void ParserDFA::fillExpansions(int state, int final)
-{
-    list<int> *nonTerminals = new list<int>();
-    for (int i = 0; i < NONE_TERMINAL; i++)
-    {
-        if (this->becomeSet[i][final - TERMINAL])
-        {
-            nonTerminals->push_back(i + TERMINAL);
-            if (this->parserDFA[state][i + TERMINAL] == -1)
-            {
-                this->parserDFA[state][i + TERMINAL] = this->parserDFA[0][i + TERMINAL];
-
-                for (int j = 0; j < TERMINAL; j++)
-                {
-                    if (this->firstSet[i][j])
-                    {
-                        if (this->parserDFA[state][j] == -1)
-                        {
-                            this->parserDFA[state][j] = this->parserDFA[0][j];
-                        }
-                    }
-                }
-            }
+            closure->splice(closure->end(), *(this->closure(new list(temp->begin(), temp->end()), handled)));
+            temp->clear();
         }
     }
-    for (int i = 0; i < TERMINAL; i++)
-    {
-        if (this->firstSet[final - TERMINAL][i])
-        {
-            if (this->parserDFA[state][i] == -1)
-            {
-                this->parserDFA[state][i] = this->parserDFA[0][i];
-            }
-        }
-    }
-    list<int>::iterator it;
-    for (it = nonTerminals->begin(); it != nonTerminals->end(); it++)
-    {
-        fillExpansions(state, *it);
-    }
+    return closure;
 }
 
 void ParserDFA::buildTable(int final)
 {
-    int i, j, state, rule = 0;
-    this->followSet[final - TERMINAL][END] = 1;
-    for (i = 0; i < NONE_TERMINAL; i++)
+    list<Gramer> *i = new list<Gramer>();
+    Gramer *gramer = new Gramer();
+    gramer->nonTerminal = PROGRAM;
+    gramer->right.push_back(final);
+    i->push_back(*gramer);
+    i = this->closure(i);
+    // print
+    for (int j = 0; j < i->size(); j++)
     {
-        for (j = 0; j < NONE_TERMINAL; j++)
+        cout << i->front().nonTerminal << " -> ";
+        for (list<int>::iterator it = i->front().right.begin(); it != i->front().right.end(); it++)
         {
-            if (this->becomeSet[i][j])
-            {
-                for (int k = 0; k < TERMINAL; k++)
-                {
-                    this->followSet[i][k] = this->followSet[i][k] || this->followSet[j][k];
-                }
-            }
+            cout << *it << " ";
         }
-    }
-    this->parserDFA[0][final] = this->initialState++;
-    this->parserDFA[this->initialState - 1][END] = ACCEPT;
-    startingPhase(final);
-    list<int> *right;
-    list<Gramer>::iterator it;
-    list<int>::iterator it2;
-    for (it = this->grammarRules->begin(); it != this->grammarRules->end(); it++, rule++)
-    {
-        right = &it->right;
-        state = 0;
-        for (it2 = right->begin(); it2 != right->end(); it2++)
-        {
-            if (*it2 < TERMINAL)
-            {
-                if (this->parserDFA[state][*it2] == -1)
-                {
-                    this->parserDFA[state][*it2] = SHIFT + this->initialState++;
-                }
-                state = this->parserDFA[state][*it2] - SHIFT;
-            }
-            else
-            {
-                if (this->parserDFA[state][*it2] == -1)
-                {
-                    this->parserDFA[state][*it2] = this->initialState++;
-                    fillExpansions(state, *it2);
-                }
-                state = this->parserDFA[state][*it2];
-            }
-        }
-        for (i = 0; i < TERMINAL; i++)
-        {
-            if (this->followSet[it->nonTerminal - TERMINAL][i])
-            {
-                if (this->parserDFA[state][i] == -1)
-                {
-                    this->parserDFA[state][i] = REDUCE + rule;
-                }
-                else
-                {
-                    cout << "Conflict in state " << state << " with terminal " << i << " and non terminal " << it->nonTerminal << endl;
-                    cout << "Rule " << rule << " and " << this->parserDFA[state][i] << endl;
-                    exit(1);
-                }
-            }
-        }
+        cout << endl;
+        i->pop_front();
     }
 }
 
