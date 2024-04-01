@@ -366,7 +366,7 @@ void ParserDFA::loadTable(string tablePath, string rulesPath)
 
 void ParserDFA::savePrettyTable(string tablePath)
 {
-    string row1 = "TY  BO  WH  FO  OU  IF  EL  OP  =   {   }   (   )   ;   ID  LI  $   SL  ST  DE  AS  EX  TE  CL  CO  LO  OU";
+    string row1 = "TY  ID  ;   =   OP  LI  (   )   IF  {   }   EL  BO  WH  FO  OU  $   SL  ST  DE  AS  EX  TE  CL  CO  LO  OU";
     ofstream file;
     file.open(tablePath);
     if (file.is_open())

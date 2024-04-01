@@ -61,8 +61,8 @@ AST *SyntacticAnalyzer::parser(string tablePath, string rulesPath)
             Gramer gramer = grammarRules[suffix];
             int gramerSize = gramer.right.size();
             Token *token = new Token();
-            token->token = to_string(gramer.nonTerminal);
-            token->type = NONE_TERMINAL;
+            token->token = parserDFA->ENG_STRINGS[gramer.nonTerminal - TERMINAL];
+            token->type = gramer.nonTerminal;
             AST *ast = new AST(token);
             for (i = 0; i < gramerSize; i++)
             {
@@ -78,7 +78,13 @@ AST *SyntacticAnalyzer::parser(string tablePath, string rulesPath)
         }
         else if (action == ACCEPT)
         {
-            return ASTack->pop();
+            Token *token = new Token();
+            token->token = "PROGRAM";
+            token->type = PROGRAM;
+            AST *ast = new AST(token);
+            AST *child = ASTack->pop();
+            ast->pushChild(child);
+            return ast;
         }
         else
         {

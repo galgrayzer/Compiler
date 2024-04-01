@@ -7,21 +7,21 @@ using namespace std;
 enum Terminal
 {
     TYPE,
+    IDENTIFIER,
+    SEMICOLON,
+    EQUAL,
+    OPERATOR,
+    LITERAL,
+    BARCKET_OPEN,
+    BARCKET_CLOSE,
+    IF,
+    CURLY_BRACKET_OPEN,
+    CURLY_BRACKET_CLOSE,
+    ELSE,
     BOOLEAN,
     WHILE,
     FOR,
     OUT,
-    IF,
-    ELSE,
-    OPERATOR,
-    EQUAL,
-    CURLY_BRACKET_OPEN,
-    CURLY_BRACKET_CLOSE,
-    BARCKET_OPEN,
-    BARCKET_CLOSE,
-    SEMICOLON,
-    IDENTIFIER,
-    LITERAL,
     END
 };
 

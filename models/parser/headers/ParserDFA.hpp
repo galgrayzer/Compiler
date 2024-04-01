@@ -12,7 +12,8 @@
 
 enum NonTerminal
 {
-    STATEMENT_LIST = TERMINAL,
+    PROGRAM = TERMINAL,
+    STATEMENT_LIST,
     STATEMENT,
     DECLARATION,
     ASSIGNMENT,
@@ -21,8 +22,7 @@ enum NonTerminal
     CONDITIONAL,
     CONDITION,
     LOOP,
-    OUTFUNC,
-    PROGRAM
+    OUTFUNC
 };
 
 enum Action
@@ -47,6 +47,7 @@ private:
     void fillExpansions(int state, int final);
 
 public:
+    string ENG_STRINGS[NONE_TERMINAL] = {"PROGRAM", "STATEMENT_LIST", "STATEMENT", "DECLARATION", "ASSIGNMENT", "EXPRESSION", "TERM", "CONDITIONAL", "CONDITION", "LOOP", "OUTFUNC"};
     ParserDFA();
     void AddGrammar(Gramer gramer);
     Gramer *getGrammarRules();

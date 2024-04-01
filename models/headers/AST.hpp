@@ -4,6 +4,7 @@ using namespace std;
 
 #include <vector>
 #include "./Token.hpp"
+#include <iostream>
 
 class AST
 {
@@ -12,6 +13,8 @@ private:
     Token *root;
     vector<AST *> *children;
     int size;
+
+    void printHelper(AST *ast, int level);
 
 public:
     // Constructors and Destructor
@@ -28,5 +31,6 @@ public:
     int getSize();
     void setChildren(vector<AST *> *children);
     void setChild(AST *child, int index);
+    void print();
     void pushChild(AST *child);
 };
