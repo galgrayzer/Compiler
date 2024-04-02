@@ -14,7 +14,7 @@ private:
     vector<AST *> *children;
     int size;
 
-    void printHelper(AST *ast, int level);
+    void printHelper(AST *tree, string prefix, bool isLast);
 
 public:
     // Constructors and Destructor

@@ -63,6 +63,7 @@ AST *SyntacticAnalyzer::parser(string tablePath, string rulesPath)
                 // Get the next token
                 upNext->token = this->tokens.front().token;
                 upNext->type = this->tokens.front().type;
+                upNext->line = this->tokens.front().line;
                 this->tokens.pop_front();
             }
             else
@@ -107,7 +108,7 @@ AST *SyntacticAnalyzer::parser(string tablePath, string rulesPath)
         {
             // Error handling for invalid action
             cout << action << " " << state << endl;
-            this->error->syntaxError(upNext->token);
+            this->error->syntaxError(*upNext);
             exit(1);
         }
     }

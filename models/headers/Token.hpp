@@ -29,4 +29,5 @@ struct Token
 {
     string token;
     int type;
+    int line;
 } typedef Token;

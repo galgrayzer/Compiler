@@ -4,6 +4,7 @@ using namespace std;
 
 #include <iostream>
 #include <exception>
+#include "../../models/headers/Token.hpp"
 
 class ErrorHandler
 {
@@ -13,6 +14,6 @@ private:
 public:
     ErrorHandler();
     void lexicalError(string token, int line);
-    void syntaxError(string token);
+    void syntaxError(Token token);
     ~ErrorHandler();
 };

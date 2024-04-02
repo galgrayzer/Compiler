@@ -12,12 +12,12 @@ void ErrorHandler::handle(string message)
 
 void ErrorHandler::lexicalError(string token, int line)
 {
-    handle("Invalid token: " + token + " at line: " + to_string(line));
+    handle("Lexical error: " + token + " at line: " + to_string(line));
 }
 
-void ErrorHandler::syntaxError(string token)
+void ErrorHandler::syntaxError(Token token)
 {
-    handle("Syntax error: " + token);
+    handle("Syntax error: " + token.token + " at line: " + to_string(token.line));
 }
 
 ErrorHandler::~ErrorHandler()

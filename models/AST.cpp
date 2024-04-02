@@ -68,26 +68,32 @@ void AST::pushChild(AST *child)
 
 void AST::print()
 {
-    this->printHelper(this, 0);
+    this->printHelper(this, "", true);
 }
 
-void AST::printHelper(AST *tree, int level)
+void AST::printHelper(AST *tree, string prefix, bool isLast)
 {
     if (tree->getRoot() == NULL)
         return;
 
-    // Print indentation based on level
-    for (int i = 0; i < level; i++)
-        cout << "    ";
-
-    // Print node value
-    cout << tree->getRoot()->token << endl;
-
-    // Print children recursively
-    vector<AST *> *children = tree->getChildren();
-    for (AST *child : *children)
-        printHelper(child, level + 1);
+    cout << prefix << (isLast ? "--- " : "|-- ") << tree->root->token << endl;
+    for (size_t i = 0; i < tree->getChildren()->size(); ++i)
+    {
+        // Pass the child node directly, not its reference
+        printHelper(tree->getChild(i), prefix + (isLast ? "   " : "|  "), i == tree->getChildren()->size() - 1);
+    }
 }
+
+// void Parser::printAST(ParseTree& root, string prefix, bool isLast) {
+//   cout << prefix << (isLast ? "└── " : "├── ") << root.value << endl;
+
+//   if (!root.children.empty()) {
+//     for (size_t i = 0; i < root.children.size(); ++i) {
+//       // Pass the child node directly, not its reference
+//       printAST(root.children[i], prefix + (isLast ? "   " : "│  "), i == root.children.size() - 1);
+//     }
+//   }
+// } 
 
 AST::~AST()
 {

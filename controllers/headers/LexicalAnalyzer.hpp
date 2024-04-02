@@ -21,7 +21,7 @@ private:
     ErrorHandler *error;
 
     // Methods
-    Token *tokenizer(string token, int state);
+    Token *tokenizer(string token, int state, int line);
 
 public:
     // Constructor and Destructor

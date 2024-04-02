@@ -54,7 +54,7 @@ list<Token> LexicalAnalyzer::lexer()
 
                 // Backtrack to the last valid state and generate a token
                 i--;
-                t = tokenizer(token, currentState);
+                t = tokenizer(token, currentState, lineCount);
                 tokens.push_back(*t);
 
                 // Reset current state and token for the next token
@@ -71,11 +71,12 @@ list<Token> LexicalAnalyzer::lexer()
     return tokens;
 }
 
-Token *LexicalAnalyzer::tokenizer(string token, int state)
+Token *LexicalAnalyzer::tokenizer(string token, int state, int line)
 {
     Token *t = new Token();
     t->token = token;
     t->type = this->dfa->getStateArray()[state];
+    t->line = line;
     return t;
 }
 
