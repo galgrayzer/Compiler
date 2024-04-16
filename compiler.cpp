@@ -23,23 +23,17 @@ int main(int argc, char const *argv[])
 
     LexicalAnalyzer *lex = new LexicalAnalyzer((char *)FILE_PATH, error); // Lexical analyzer
     list<Token> tokens = lex->lexer();                                    // List of tokens
-    cout << "Lexer: " << endl;
-    printTokens(tokens);
 
     SyntacticAnalyzer *syn = new SyntacticAnalyzer(tokens, error);                          // Syntactic analyzer
     AST *ast = syn->parser("./DFAs/parser/parserDFA.txt", "./DFAs/parser/parserRules.txt"); // Abstract syntax tree
-    cout << endl
-         << "AST: " << endl;
-    ast->print();
 
     SymanticAnalyzer *sym = new SymanticAnalyzer(ast, error); // Symantic analyzer
     sym->printSymbolTable();                                  // Print symbol table
     ast = sym->symantic();                                    // Symantic analysis
 
     cout << endl
-         << "Symantic: " << endl;
+         << "AST: " << endl;
     ast->print();
 
-    cout << "done" << endl;
     return 0;
 }

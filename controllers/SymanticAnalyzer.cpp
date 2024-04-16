@@ -79,7 +79,7 @@ void SymanticAnalyzer::CreateSymbolTable(AST *tree, int scope)
         string identifier = tree->getChild(1)->getRoot()->token;                // Get the identifier of the variable
         if (symbolTable.find(Symbol(identifier, 0, 0, 0)) != symbolTable.end()) // Check if the variable is already declared
         {
-            error->SymanticError("Variable " + identifier + " already declared", token->line);
+            error->SymanticError("Variable " + identifier + " already declared", tree->getChild(0)->getRoot()->line);
         }
         symbolTable.insert(Symbol(identifier, typeCode, scope, tree->getChild(1)->getRoot()->line)); // Insert the variable into the symbol table
     }
@@ -165,7 +165,14 @@ AST *SymanticAnalyzer::symanticHelper(AST *tree, int scope)
             error->SymanticError("Invalid Type Error: Cannot assign " + tree->getSymbolType(tree->getChild(2)->getRoot()->typeCode) + " to identifer " + tree->getChild(0)->getRoot()->token + " (" + tree->getSymbolType(tree->getChild(0)->getRoot()->typeCode) + ")", tree->getChild(0)->getRoot()->line);
         }
     }
-    else if (token->type)
+    if (token->type == EXPRESSION && tree->getChild(0)->getRoot()->type == EXPRESSION) // Check for type errors in the expression
+    {
+        if (tree->getChild(0)->getRoot()->typeCode != tree->getChild(2)->getRoot()->typeCode) // Check for type errors in the expression
+        {
+            error->SymanticError("Invalid Type Error: Cannot perform operation on " + tree->getSymbolType(tree->getChild(0)->getRoot()->typeCode) + " and " + tree->getSymbolType(tree->getChild(2)->getRoot()->typeCode), tree->getChild(1)->getRoot()->line);
+        }
+        token->typeCode = tree->getChild(0)->getRoot()->typeCode; // Set the type code of the expression
+    }
     tree->setRoot(token); // Set the root of the tree
     return tree;
 }
