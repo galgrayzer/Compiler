@@ -1,12 +1,7 @@
-int a;
-a = 51 * 7 / (3 + 2) - 1;
-if (a) {
-    a = 1;
-    for (5) {
-        bool b;
-        b = (a + 1) == (1 || b != 0);
-    }
-}
-else {
-    a = 2;
+char b;
+if (a == 0) {
+    int a;
+} 
+if (b == 0) {
+    int c;
 }

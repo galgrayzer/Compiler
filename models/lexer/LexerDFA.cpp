@@ -16,6 +16,7 @@ DFA::DFA()
             // Transition rules for identifiers
             this->transitionTable[0][i] = TRANSISTION_TABLE_SIZE - 2;
             this->transitionTable[TRANSISTION_TABLE_SIZE - 2][i] = TRANSISTION_TABLE_SIZE - 2;
+            this->transitionTable[TRANSISTION_TABLE_SIZE - 3][i] = TRANSISTION_TABLE_SIZE - 3;
             this->transitionTable[TRANSISTION_TABLE_SIZE - 1][i] = -2;
         }
         else if (isdigit(i))
@@ -24,6 +25,7 @@ DFA::DFA()
             this->transitionTable[0][i] = TRANSISTION_TABLE_SIZE - 1;
             this->transitionTable[TRANSISTION_TABLE_SIZE - 1][i] = TRANSISTION_TABLE_SIZE - 1;
             this->transitionTable[TRANSISTION_TABLE_SIZE - 2][i] = TRANSISTION_TABLE_SIZE - 2;
+            this->transitionTable[TRANSISTION_TABLE_SIZE - 3][i] = TRANSISTION_TABLE_SIZE - 3;
         }
         else
         {
@@ -31,11 +33,12 @@ DFA::DFA()
             this->transitionTable[0][i] = -1;
             this->transitionTable[TRANSISTION_TABLE_SIZE - 2][i] = -1;
             this->transitionTable[TRANSISTION_TABLE_SIZE - 1][i] = -1;
+            this->transitionTable[TRANSISTION_TABLE_SIZE - 3][i] = (i == '\'' ? TRANSISTION_TABLE_SIZE - 4 : TRANSISTION_TABLE_SIZE - 3);
         }
     }
 
     // Initialize state array
-    for (int i = 1; i < TRANSISTION_TABLE_SIZE - 2; i++)
+    for (int i = 1; i < TRANSISTION_TABLE_SIZE - 3; i++)
     {
         for (int j = 0; j < TRANSISTION_TABLE_SIZE; j++)
         {
@@ -43,8 +46,11 @@ DFA::DFA()
         }
         this->stateArray[i] = IDENTIFIER;
     }
+    // Set transition rule for char type
+    this->transitionTable[0]['\''] = TRANSISTION_TABLE_SIZE - 3;
+
     this->stateArray[TRANSISTION_TABLE_SIZE - 2] = IDENTIFIER;
-    this->stateArray[TRANSISTION_TABLE_SIZE - 1] = LITERAL;
+    this->stateArray[TRANSISTION_TABLE_SIZE - 1] = this->stateArray[TRANSISTION_TABLE_SIZE - 4] = LITERAL;
 }
 
 /**

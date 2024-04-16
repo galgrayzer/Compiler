@@ -84,17 +84,6 @@ void AST::printHelper(AST *tree, string prefix, bool isLast)
     }
 }
 
-// void Parser::printAST(ParseTree& root, string prefix, bool isLast) {
-//   cout << prefix << (isLast ? "└── " : "├── ") << root.value << endl;
-
-//   if (!root.children.empty()) {
-//     for (size_t i = 0; i < root.children.size(); ++i) {
-//       // Pass the child node directly, not its reference
-//       printAST(root.children[i], prefix + (isLast ? "   " : "│  "), i == root.children.size() - 1);
-//     }
-//   }
-// } 
-
 AST::~AST()
 {
 }

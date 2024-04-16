@@ -30,4 +30,5 @@ struct Token
     string token;
     int type;
     int line;
+    int typeCode;
 } typedef Token;

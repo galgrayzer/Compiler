@@ -20,6 +20,11 @@ void ErrorHandler::syntaxError(Token token)
     handle("Syntax error: " + token.token + " at line: " + to_string(token.line));
 }
 
+void ErrorHandler::SymanticError(string message, int line)
+{
+    handle("Symantic error: " + message + " at line: " + to_string(line));
+}
+
 ErrorHandler::~ErrorHandler()
 {
 }

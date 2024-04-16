@@ -17,6 +17,7 @@ list<Token> LexicalAnalyzer::lexer()
 {
     // Initialize an empty list to store tokens
     list<Token> tokens;
+    bool charOn = false;
 
     // Open the input file for reading
     ifstream file(this->filePath);
@@ -42,6 +43,9 @@ list<Token> LexicalAnalyzer::lexer()
                 // Traverse the DFA until a final state or an invalid transition is reached
                 while (transitionTable[currentState][line[i]] != -1)
                 {
+                    if (line[i] == '\'')
+                        charOn = !charOn;
+
                     token += line[i];
                     currentState = transitionTable[currentState][line[i]];
 
@@ -66,6 +70,10 @@ list<Token> LexicalAnalyzer::lexer()
 
     // Close the input file
     file.close();
+
+    // check if there is an unterminated character
+    if (charOn)
+        this->error->lexicalError("Unterminated character", lineCount);
 
     // Return the list of tokens
     return tokens;

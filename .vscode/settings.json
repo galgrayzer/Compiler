@@ -4,6 +4,7 @@
         "iomanip": "cpp",
         "array": "cpp",
         "hash_set": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "initializer_list": "cpp"
     }
 }

@@ -15,5 +15,6 @@ public:
     ErrorHandler();
     void lexicalError(string token, int line);
     void syntaxError(Token token);
+    void SymanticError(string message, int line);
     ~ErrorHandler();
 };
