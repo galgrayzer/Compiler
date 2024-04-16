@@ -1,3 +1,5 @@
+#pragma once
+
 using namespace std;
 
 #include <string>
@@ -15,8 +17,9 @@ public:
     string name;
     int type;
     int scope;
+    int line;
 
-    Symbol(string name, int type, int scope = 0);
+    Symbol(string name, int type, int scope, int line);
 
     bool operator==(const Symbol &other) const;
 

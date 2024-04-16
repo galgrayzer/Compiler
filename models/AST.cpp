@@ -12,6 +12,8 @@ AST::AST(Token *root)
     Token *newRoot = new Token();
     newRoot->token = root->token;
     newRoot->type = root->type;
+    newRoot->line = root->line;
+    newRoot->typeCode = root->typeCode;
     this->root = newRoot;
     this->children = new vector<AST *>();
     this->size = 0;
@@ -71,12 +73,33 @@ void AST::print()
     this->printHelper(this, "", true);
 }
 
+string AST::getSymbolType(int type)
+{
+    switch (type)
+    {
+    case INT:
+        return "int";
+    case BOOL:
+        return "bool";
+    case CHAR:
+        return "char";
+    default:
+        return "unknown";
+    }
+}
+
 void AST::printHelper(AST *tree, string prefix, bool isLast)
 {
     if (tree->getRoot() == NULL)
         return;
 
-    cout << prefix << (isLast ? "--- " : "|-- ") << tree->root->token << endl;
+    // Print the root node                                                                                TERM                     EXPRESSION
+    if (tree->getRoot()->type == LITERAL || tree->getRoot()->type == IDENTIFIER || tree->getRoot()->type == 22 || tree->getRoot()->type == 23)
+        cout << prefix << (isLast ? "--- " : "|-- ") << tree->root->token << " (" << this->getSymbolType(tree->root->typeCode) << ")" << endl;
+    else
+        cout << prefix << (isLast ? "--- " : "|-- ") << tree->root->token << endl;
+
+    // Print the children nodes
     for (size_t i = 0; i < tree->getChildren()->size(); ++i)
     {
         // Pass the child node directly, not its reference

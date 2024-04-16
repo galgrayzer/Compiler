@@ -19,11 +19,11 @@ private:
     };
     int IdentifyType(Token *token);
     void CreateSymbolTable(AST *tree, int scope);
-    AST *symantic();
+    AST *symanticHelper(AST *tree, int scope);
 
 public:
     SymanticAnalyzer(AST *parseTree, ErrorHandler *error);
     void printSymbolTable();
-    string getSymbolType(int type);
+    AST *symantic();
     ~SymanticAnalyzer();
 };

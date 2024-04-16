@@ -1,7 +1,3 @@
-char b;
-if (a == 0) {
-    int a;
-} 
-if (b == 0) {
-    int c;
+for (4) {
+    out(5 + '3');
 }

@@ -4,6 +4,7 @@ using namespace std;
 
 #include <vector>
 #include "./Token.hpp"
+#include "../symantic/headers/Symbol.hpp"
 #include <iostream>
 
 class AST
@@ -13,7 +14,6 @@ private:
     Token *root;
     vector<AST *> *children;
     int size;
-
     void printHelper(AST *tree, string prefix, bool isLast);
 
 public:
@@ -33,4 +33,5 @@ public:
     void setChild(AST *child, int index);
     void print();
     void pushChild(AST *child);
+    string getSymbolType(int type);
 };

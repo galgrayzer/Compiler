@@ -19,6 +19,7 @@ void createLexerDfa()
     dfa->addToken("out", OUT);
     // dfa->addToken("++", OPERATOR);
     // dfa->addToken("--", OPERATOR);
+    dfa->addToken("=", EQUAL);
     dfa->addToken("==", OPERATOR);
     dfa->addToken("!=", OPERATOR);
     dfa->addToken("<=", OPERATOR);
@@ -31,7 +32,6 @@ void createLexerDfa()
     dfa->addToken("*", OPERATOR);
     dfa->addToken("/", OPERATOR);
     dfa->addToken("%", OPERATOR);
-    dfa->addToken("=", EQUAL);
     dfa->addToken("<", OPERATOR);
     dfa->addToken(">", OPERATOR);
     dfa->addToken("(", BARCKET_OPEN);

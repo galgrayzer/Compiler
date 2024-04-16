@@ -9,7 +9,7 @@
                 "-g",
                 "${file}",
                 // "C:\\Users\\galgr\\OneDrive\\Desktop\\Programs\\Compiler\\models\\parser\\ParserDFA.cpp",
-                "${fileDirname}\\controllers\\LexicalAnalyzer.cpp","${fileDirname}\\models\\lexer\\LexerDFA.cpp","${fileDirname}\\controllers\\SyntacticAnalyzer.cpp","${fileDirname}\\models\\parser\\ParserDFA.cpp","${fileDirname}\\models\\AST.cpp","${fileDirname}\\controllers\\ErrorHandler.cpp",
+                // "${fileDirname}\\controllers\\LexicalAnalyzer.cpp","${fileDirname}\\models\\lexer\\LexerDFA.cpp","${fileDirname}\\controllers\\SyntacticAnalyzer.cpp","${fileDirname}\\models\\parser\\ParserDFA.cpp","${fileDirname}\\models\\AST.cpp","${fileDirname}\\controllers\\ErrorHandler.cpp",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe"
             ],

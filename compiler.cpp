@@ -34,6 +34,11 @@ int main(int argc, char const *argv[])
 
     SymanticAnalyzer *sym = new SymanticAnalyzer(ast, error); // Symantic analyzer
     sym->printSymbolTable();                                  // Print symbol table
+    ast = sym->symantic();                                    // Symantic analysis
+
+    cout << endl
+         << "Symantic: " << endl;
+    ast->print();
 
     cout << "done" << endl;
     return 0;

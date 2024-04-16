@@ -38,6 +38,7 @@ AST *SyntacticAnalyzer::parser(string tablePath, string rulesPath)
     {
         upNext->token = this->tokens.front().token;
         upNext->type = this->tokens.front().type;
+        upNext->line = this->tokens.front().line;
         this->tokens.pop_front();
     }
 

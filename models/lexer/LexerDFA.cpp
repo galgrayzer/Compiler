@@ -82,6 +82,9 @@ bool DFA::needIdentifierFill(int type)
  */
 void DFA::addToken(string token, int type)
 {
+    if (type == OUT) {
+        int a = 1;
+    }
     if (this->transitionTable[0][token[0]] == -1 || this->transitionTable[0][token[0]] == TRANSISTION_TABLE_SIZE - 2) // If the transition is not defined
     {
         this->transitionTable[0][token[0]] = this->initialState; // Define the transition
@@ -97,11 +100,11 @@ void DFA::addToken(string token, int type)
         if (this->transitionTable[currentState][token[i]] == -1 || this->transitionTable[currentState][token[i]] == TRANSISTION_TABLE_SIZE - 2)
         {
             this->transitionTable[currentState][token[i]] = this->initialState;
-            this->initialState++;
             if (needIdentifierFill(type))
             {
                 this->fillRowIdentifier(initialState);
             }
+            this->initialState++;
         }
         currentState = this->transitionTable[currentState][token[i]];
     }
