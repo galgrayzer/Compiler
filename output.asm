@@ -6,108 +6,18 @@ global _start
 
 section .data
 	tmp db 100 dup(0)
+	b dd 0
 
 _start:
-	mov eax, 'H'
-	mov [tmp], eax
-	pusha
 	mov eax, 4
-	mov ebx, 1
-	mov ecx, tmp
-	mov edx, 2
-	int 0x80
-	popa
-	mov eax, 'e'
-	mov [tmp], eax
-	pusha
-	mov eax, 4
-	mov ebx, 1
-	mov ecx, tmp
-	mov edx, 2
-	int 0x80
-	popa
-	mov eax, 'l'
-	mov [tmp], eax
-	pusha
-	mov eax, 4
-	mov ebx, 1
-	mov ecx, tmp
-	mov edx, 2
-	int 0x80
-	popa
-	mov eax, 'l'
-	mov [tmp], eax
-	pusha
-	mov eax, 4
-	mov ebx, 1
-	mov ecx, tmp
-	mov edx, 2
-	int 0x80
-	popa
-	mov eax, 'o'
-	mov [tmp], eax
-	pusha
-	mov eax, 4
-	mov ebx, 1
-	mov ecx, tmp
-	mov edx, 2
-	int 0x80
-	popa
-	mov eax, ' '
-	mov [tmp], eax
-	pusha
-	mov eax, 4
-	mov ebx, 1
-	mov ecx, tmp
-	mov edx, 2
-	int 0x80
-	popa
-	mov eax, 'W'
-	mov [tmp], eax
-	pusha
-	mov eax, 4
-	mov ebx, 1
-	mov ecx, tmp
-	mov edx, 2
-	int 0x80
-	popa
-	mov eax, 'o'
-	mov [tmp], eax
-	pusha
-	mov eax, 4
-	mov ebx, 1
-	mov ecx, tmp
-	mov edx, 2
-	int 0x80
-	popa
-	mov eax, 'r'
-	mov [tmp], eax
-	pusha
-	mov eax, 4
-	mov ebx, 1
-	mov ecx, tmp
-	mov edx, 2
-	int 0x80
-	popa
-	mov eax, 'l'
-	mov [tmp], eax
-	pusha
-	mov eax, 4
-	mov ebx, 1
-	mov ecx, tmp
-	mov edx, 2
-	int 0x80
-	popa
-	mov eax, 'd'
-	mov [tmp], eax
-	pusha
-	mov eax, 4
-	mov ebx, 1
-	mov ecx, tmp
-	mov edx, 2
-	int 0x80
-	popa
-	mov eax, '!'
+	mov ebx, 3
+	mov ecx, 5
+	add ebx, ecx
+	imul eax, ebx
+	mov [b], eax
+	mov eax, [b]
+	mov ebx, 48
+	add eax, ebx
 	mov [tmp], eax
 	pusha
 	mov eax, 4

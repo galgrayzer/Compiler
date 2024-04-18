@@ -19,6 +19,7 @@ private:
         {"bool", BOOL},
         {"char", CHAR},
     };
+    bool isCmpOp(string token);
     int IdentifyType(Token *token);
     void CreateSymbolTable(AST *tree, int scope);
     AST *symanticHelper(AST *tree, int scope);

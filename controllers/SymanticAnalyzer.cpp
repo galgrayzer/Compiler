@@ -174,10 +174,28 @@ AST *SymanticAnalyzer::symanticHelper(AST *tree, int scope)
         {
             error->SymanticError("Invalid Type Error: Cannot perform operation on " + tree->getSymbolType(tree->getChild(0)->getRoot()->typeCode) + " and " + tree->getSymbolType(tree->getChild(2)->getRoot()->typeCode), tree->getChild(1)->getRoot()->line);
         }
-        token->typeCode = tree->getChild(0)->getRoot()->typeCode; // Set the type code of the expression
+        if (isCmpOp(tree->getChild(1)->getRoot()->token)) // Check if the expression is a comparison operator
+        {
+            token->typeCode = INT; // Set the type code of the expression
+        }
+        else
+            token->typeCode = tree->getChild(0)->getRoot()->typeCode; // Set the type code of the expression
     }
     tree->setRoot(token); // Set the root of the tree
     return tree;
+}
+
+/**
+ * @brief Checks if the given type is a comparison operator.
+ *
+ * This function checks if the given type is a comparison operator.
+ *
+ * @param type The type to check.
+ * @return True if the type is a comparison operator, false otherwise.
+ */
+bool SymanticAnalyzer::isCmpOp(string token)
+{
+    return token == "==" || token == "!=" || token == "<" || token == ">" || token == "<=" || token == ">=" || token == "&&" || token == "||";
 }
 
 SymanticAnalyzer::~SymanticAnalyzer()

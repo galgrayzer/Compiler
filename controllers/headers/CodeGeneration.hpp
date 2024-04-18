@@ -1,5 +1,7 @@
 #pragma once
 
+using namespace std;
+
 #include "../../models/headers/AST.hpp"
 #include "../../models/parser/headers/ParserDFA.hpp"
 #include "../../models/symantic/headers/Symbol.hpp"
@@ -13,7 +15,9 @@ class CodeGeneration
 {
 private:
     AST *program;
-    unordered_set<Symbol, Symbol::HashFunction> symbolTable;
+    int labelCount;
+    unordered_set<Symbol, Symbol::HashFunction>
+        symbolTable;
     Register registers[6];
     vector<string> code;
     void addCode(string code);
@@ -30,10 +34,12 @@ private:
     void freeRegister(Register reg);
     void pushRegs(string *regs, int n);
     void popRegs(string *regs, int n);
+    string convert32to8(Register reg, int byte);
 
     // function to generate code
     void outFunction(AST *outFunction);
-    string ifStatement(AST *ifStatement);
+    void forStatement(AST *forStatement);
+    void assignStatement(AST *assignStatement);
 
 public:
     CodeGeneration(AST *program, unordered_set<Symbol, Symbol::HashFunction> symbolTable);

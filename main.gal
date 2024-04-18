@@ -1,12 +1,3 @@
-out('H');
-out('e');
-out('l');
-out('l');
-out('o');
-out(' ');
-out('W');
-out('o');
-out('r');
-out('l');
-out('d');
-out('!');
+int b;
+b = 4 * (3 + 5);
+out(b + 48);
