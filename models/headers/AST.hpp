@@ -5,6 +5,7 @@ using namespace std;
 #include <vector>
 #include "./Token.hpp"
 #include "../symantic/headers/Symbol.hpp"
+#include "../codegen/headers/Register.hpp"
 #include <iostream>
 
 class AST
@@ -14,6 +15,7 @@ private:
     Token *root;
     vector<AST *> *children;
     int size;
+    Register reg;
     void printHelper(AST *tree, string prefix, bool isLast);
 
 public:
@@ -25,6 +27,8 @@ public:
 
     // Methods
     void setRoot(Token *root);
+    void setReg(Register reg);
+    Register getReg();
     Token *getRoot();
     vector<AST *> *getChildren();
     AST *getChild(int index);

@@ -6,6 +6,7 @@ using namespace std;
 #include "./controllers/headers/LexicalAnalyzer.hpp"
 #include "./controllers/headers/SyntacticAnalyzer.hpp"
 #include "./controllers/headers/SymanticAnalyzer.hpp"
+#include "./controllers/headers/CodeGeneration.hpp"
 
 void printTokens(list<Token> tokens)
 {
@@ -34,6 +35,9 @@ int main(int argc, char const *argv[])
     cout << endl
          << "AST: " << endl;
     ast->print();
+
+    CodeGeneration *code = new CodeGeneration(ast, sym->getSymbolTable());
+    code->generate("output.asm");
 
     return 0;
 }

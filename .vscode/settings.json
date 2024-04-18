@@ -7,6 +7,13 @@
         "string_view": "cpp",
         "initializer_list": "cpp",
         "iostream": "cpp",
-        "new": "cpp"
+        "new": "cpp",
+        "optional": "cpp",
+        "system_error": "cpp",
+        "functional": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp",
+        "unordered_set": "cpp"
     }
 }

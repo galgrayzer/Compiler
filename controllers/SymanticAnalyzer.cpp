@@ -68,11 +68,7 @@ void SymanticAnalyzer::CreateSymbolTable(AST *tree, int scope)
         CreateSymbolTable(tree->getChild(i), scope); // Recursively create symbol table for the children
     }
     Token *token = tree->getRoot(); // Get the root token of the tree
-    if (token->type == LITERAL)
-    {
-        symbolTable.insert(Symbol(token->token, IdentifyType(token), scope, token->line)); // Insert the literal into the symbol table
-    }
-    else if (token->type == DECLARATION)
+    if (token->type == DECLARATION)
     {
         string type = tree->getChild(0)->getRoot()->token;
         int typeCode = typeMap[type];                                           // Get the type code of the variable
@@ -93,6 +89,18 @@ void SymanticAnalyzer::printSymbolTable()
     {
         cout << symbol.name << "\t\t" << symbol.type << "\t" << symbol.scope << endl;
     }
+}
+
+/**
+ * @brief Returns the symbol table of the symantic analyzer.
+ *
+ * This function returns the symbol table of the symantic analyzer.
+ *
+ * @return The symbol table of the symantic analyzer.
+ */
+unordered_set<Symbol, Symbol::HashFunction> SymanticAnalyzer::getSymbolTable()
+{
+    return this->symbolTable;
 }
 
 /**
@@ -144,12 +152,7 @@ AST *SymanticAnalyzer::symanticHelper(AST *tree, int scope)
     }
     else if (token->type == LITERAL)
     {
-        auto symbol = symbolTable.find(Symbol(token->token, 0, 0, 0)); // Find the literal in the symbol table
-        if (symbol == symbolTable.end())                               // Check if the literal is unrecognized
-        {
-            error->SymanticError("Unrecognized literal " + token->token, token->line);
-        }
-        token->typeCode = symbol->type; // Set the type code of the literal
+        token->typeCode = IdentifyType(token); // Identify the type of the literal
     }
     else if (token->type == TERM || token->type == EXPRESSION)
     {

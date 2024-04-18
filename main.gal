@@ -1,7 +1,12 @@
-int a;
-for (3) {
-    a = 5;
-    char b;
-    b = 'a';
-    out(3);
-}
+out('H');
+out('e');
+out('l');
+out('l');
+out('o');
+out(' ');
+out('W');
+out('o');
+out('r');
+out('l');
+out('d');
+out('!');

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <unordered_set>
 #include <unordered_map>
 
@@ -24,6 +26,7 @@ private:
 public:
     SymanticAnalyzer(AST *parseTree, ErrorHandler *error);
     void printSymbolTable();
+    unordered_set<Symbol, Symbol::HashFunction> getSymbolTable();
     AST *symantic();
     ~SymanticAnalyzer();
 };

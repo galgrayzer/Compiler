@@ -31,6 +31,16 @@ void AST::setRoot(Token *root)
     this->root = root;
 }
 
+void AST::setReg(Register reg)
+{
+    this->reg = reg;
+}
+
+Register AST::getReg()
+{
+    return this->reg;
+}
+
 Token *AST::getRoot()
 {
     return this->root;
