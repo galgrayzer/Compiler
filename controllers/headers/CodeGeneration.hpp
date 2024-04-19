@@ -39,7 +39,9 @@ private:
     // function to generate code
     void outFunction(AST *outFunction);
     void forStatement(AST *forStatement);
+    void whileStatement(AST *whileStatement);
     void assignStatement(AST *assignStatement);
+    void ifStatement(AST *ifStatement);
 
 public:
     CodeGeneration(AST *program, unordered_set<Symbol, Symbol::HashFunction> symbolTable);

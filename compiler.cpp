@@ -18,7 +18,8 @@ void printTokens(list<Token> tokens)
 
 int main(int argc, char const *argv[])
 {
-    const char *FILE_PATH = "main.gal"; // argv[1];
+    const char *FILE_PATH = argv[1];   // File path
+    const char *OUTPUT_FILE = argv[2]; // Output file
 
     ErrorHandler *error = new ErrorHandler(); // Error handler
 
@@ -37,7 +38,7 @@ int main(int argc, char const *argv[])
     ast->print();
 
     CodeGeneration *code = new CodeGeneration(ast, sym->getSymbolTable());
-    code->generate("output.asm");
+    code->generate((string)OUTPUT_FILE);
 
     return 0;
 }

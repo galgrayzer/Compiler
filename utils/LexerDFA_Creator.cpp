@@ -20,6 +20,9 @@ void createLexerDfa()
     // dfa->addToken("++", OPERATOR);
     // dfa->addToken("--", OPERATOR);
     dfa->addToken("=", EQUAL);
+    dfa->addToken("|", OPERATOR);
+    dfa->addToken("^", OPERATOR);
+    dfa->addToken("&", OPERATOR);
     dfa->addToken("==", OPERATOR);
     dfa->addToken("!=", OPERATOR);
     dfa->addToken("<=", OPERATOR);

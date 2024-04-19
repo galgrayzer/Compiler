@@ -1,0 +1,19 @@
+int a;
+int b;
+int c;
+a = 1;
+b = 1;
+
+out(a);
+out(' ');
+out(b);
+out(' ');
+
+for (10)
+{
+    c = a + b;
+    out(c);
+    out(' ');
+    b = a;
+    a = c;
+}

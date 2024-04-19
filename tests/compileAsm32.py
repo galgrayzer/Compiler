@@ -13,8 +13,8 @@ def main():
         return
 
     filename = filename[:-4]
-    system(f"nasm -f elf {filename}.asm -o {filename}.o")
-    system(f"ld -m elf_i386 {filename}.o -o {filename}")
+    system(f"nasm -f elf -g {filename}.asm -o {filename}.o")
+    system(f"ld -m elf_i386 -g {filename}.o -o {filename}")
     remove(f"{filename}.o")
 
 

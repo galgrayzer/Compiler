@@ -52,6 +52,16 @@ void CodeGeneration::codeFromAST(AST *tree)
             forStatement(tree);
             return;
         }
+        else if (loopType == WHILE)
+        {
+            whileStatement(tree);
+            return;
+        }
+    }
+    if (root->type == CONDITIONAL)
+    {
+        ifStatement(tree);
+        return;
     }
     for (AST *child : *tree->getChildren())
     {
@@ -66,12 +76,41 @@ void CodeGeneration::generateBase(ofstream &file)
 
 void CodeGeneration::generateEnd(ofstream &file)
 {
-    file << "\tmov eax, 1\n\tmov ebx, 0\n\tint 0x80\n";
+    file << "\n\tmov eax, 1\n\tmov ebx, 0\n\tint 0x80\n\n";
+    // print decimal function
+    /*
+    printDecimal:
+    xor ecx, ecx ; counter
+mone:
+    inc ecx ; counter++
+    xor edx, edx ; dx = 0
+    div word [ten] ; ax = ax / divider, dx = ax % divider
+    push edx ; push dx to the stack
+    cmp eax, 0 ; if ax == 0
+    jg mone ; jump to mone
+
+putChar:
+    pop edx ; pop dx from the stack
+    add edx, '0' ; convert dx to ASCII
+    mov [tmp], edx ; store dx to tmp
+    pusha ; push all registers to the stack
+    mov eax, 4 ; syscall number
+    mov ebx, 1 ; file descriptor
+    mov ecx, tmp ; pointer to the string
+    mov edx, 2 ; length of the string
+    int 0x80 ; call kernel
+    popa ; pop all registers from the stack
+    loop putChar ; loop putChar
+
+    ret ; return to the caller
+    */
+    file << "printDecimal:\n\txor ecx, ecx\nmone:\n\tinc ecx\n\txor edx, edx\n\tdiv word [ten]\n\tpush edx\n\tcmp eax, 0\n\tjg mone\n\nputChar:\n\tpop edx\n\tadd edx, '0'\n\tmov [tmp], edx\n\tpusha\n\tmov eax, 4\n\tmov ebx, 1\n\tmov ecx, tmp\n\tmov edx, 2\n\tint 0x80\n\tpopa\n\tloop putChar\n\tret\n";
 }
 
 void CodeGeneration::generateIdentifiers(ofstream &file)
 {
     file << "\ttmp db 100 dup(0)\n";
+    file << "\tten dw 10\n";
     for (Symbol s : symbolTable)
     {
         file << "\t" << s.name << (s.type == CHAR ? " db 0\n" : " dd 0\n");
@@ -97,16 +136,21 @@ void CodeGeneration::outFunction(AST *node)
     Register reg = generateExpression(node->getChild(2));
     int type = node->getChild(2)->getRoot()->typeCode;
     if (type == CHAR)
+    {
         addCode("\tmov [tmp], " + reg.name + "\n");
+        addCode("\tpusha\n");
+        addCode("\tmov eax, 4\n");
+        addCode("\tmov ebx, 1\n");
+        addCode("\tmov ecx, tmp\n");
+        addCode("\tmov edx, 2\n");
+        addCode("\tint 0x80\n");
+        addCode("\tpopa\n");
+    }
     else if (type == INT)
-        addCode("\tmov [tmp], " + reg.name + "\n");
-    addCode("\tpusha\n");
-    addCode("\tmov eax, 4\n");
-    addCode("\tmov ebx, 1\n");
-    addCode("\tmov ecx, tmp\n");
-    addCode("\tmov edx, 2\n");
-    addCode("\tint 0x80\n");
-    addCode("\tpopa\n");
+    {
+        addCode("\tmov eax, " + reg.name + "\n");
+        addCode("\tcall printDecimal\n");
+    }
     freeRegister(reg);
 }
 
@@ -118,9 +162,24 @@ void CodeGeneration::forStatement(AST *forStatement)
     Register reg = getRegister();
     addCode("\tmov " + reg.name + ", " + count->token + "\n");
     addCode("for_loop_" + to_string(labelC) + ":\n");
+    addCode("\tpush " + reg.name + "\n");
     codeFromAST(forStatement->getChild(5));
+    addCode("\tpop " + reg.name + "\n");
     addCode("\tdec " + reg.name + "\n");
     addCode("\tjnz for_loop_" + to_string(labelC) + "\n");
+}
+
+void CodeGeneration::whileStatement(AST *whileStatement)
+{
+    int count = this->labelCount++;
+    addCode("while_" + to_string(count) + ":\n");
+    Register reg = generateExpression(whileStatement->getChild(2)->getChild(0));
+    addCode("\tcmp " + reg.name + ", 0\n");
+    addCode("\tjz end_" + to_string(count) + "\n");
+    codeFromAST(whileStatement->getChild(5));
+    addCode("\tjmp while_" + to_string(count) + "\n");
+    addCode("end_" + to_string(count) + ":\n");
+    freeRegister(reg);
 }
 
 void CodeGeneration::assignStatement(AST *assignStatement)
@@ -129,6 +188,34 @@ void CodeGeneration::assignStatement(AST *assignStatement)
     Register reg = generateExpression(assignStatement->getChild(2));
     addCode("\tmov [" + identifier->token + "], " + reg.name + "\n");
     freeRegister(reg);
+}
+
+void CodeGeneration::ifStatement(AST *ifState)
+{
+    if (ifState->getSize() == 7) // regular if
+    {
+        Register reg = generateExpression(ifState->getChild(2)->getChild(0));
+        addCode("\tcmp " + reg.name + ", 0\n");
+        int count = this->labelCount++;
+        addCode("\tjz end_" + to_string(count) + "\n");
+        codeFromAST(ifState->getChild(5));
+        addCode("end_" + to_string(count) + ":\n");
+        freeRegister(reg);
+    }
+    else
+    { // if with else
+        AST *cond = ifState->getChild(0);
+        Register reg = generateExpression(cond->getChild(2)->getChild(0));
+        addCode("\tcmp " + reg.name + ", 0\n");
+        int count = this->labelCount++;
+        addCode("\tjz else_" + to_string(count) + "\n");
+        codeFromAST(cond->getChild(5));
+        addCode("\tjmp end_" + to_string(count) + "\n");
+        addCode("else_" + to_string(count) + ":\n");
+        codeFromAST(ifState->getChild(3));
+        addCode("end_" + to_string(count) + ":\n");
+        freeRegister(reg);
+    }
 }
 
 Register CodeGeneration::generateExpression(AST *expression)
@@ -169,6 +256,58 @@ Register CodeGeneration::generateExpression(AST *expression)
                 freeRegister(rreg);
                 expression->setReg(lreg);
             }
+            else if (op == "/")
+            {
+                addCode("\tpush edx\n");
+                addCode("\tpush eax\n");
+                addCode("\tmov eax, " + lreg.name + "\n");
+                Register reg = getRegister();
+                addCode("\tmov " + reg.name + ", " + rreg.name + "\n");
+                addCode("\txor edx, edx\n");
+                addCode("\tidiv " + reg.name + "\n");
+                addCode("\tmov " + reg.name + ", eax\n");
+                addCode("\tpop eax\n");
+                addCode("\tpop edx\n");
+                addCode("\tmov " + lreg.name + ", " + reg.name + "\n");
+                freeRegister(reg);
+                freeRegister(rreg);
+                expression->setReg(lreg);
+            }
+            else if (op == "%")
+            {
+                addCode("\tpush edx\n");
+                addCode("\tpush eax\n");
+                addCode("\tmov eax, " + lreg.name + "\n");
+                setRegState({"edx", true}, false);
+                Register reg = getRegister();
+                addCode("\tmov " + reg.name + ", " + rreg.name + "\n");
+                addCode("\txor edx, edx\n");
+                setRegState({"edx", false}, true);
+                addCode("\tidiv " + reg.name + "\n");
+                addCode("\tmov " + reg.name + ", edx\n");
+                addCode("\tpop eax\n");
+                addCode("\tpop edx\n");
+                addCode("\tmov " + lreg.name + ", " + reg.name + "\n");
+                freeRegister(reg);
+                freeRegister(rreg);
+                expression->setReg(lreg);
+            }
+            else if (op == "<")
+            {
+                addCode("\tcmp " + lreg.name + ", " + rreg.name + "\n");
+                string reg8 = convert32to8(lreg, 1);
+                addCode("\tsetl " + reg8 + "\n");
+                freeRegister(rreg);
+                expression->setReg(lreg);
+            }
+            else if (op == ">")
+            {
+                addCode("\tcmp " + lreg.name + ", " + rreg.name + "\n");
+                string reg8 = convert32to8(lreg, 1);
+                addCode("\tsetg " + reg8 + "\n");
+                freeRegister(rreg);
+                expression->setReg(lreg);
+            }
             else if (op == "==")
             {
                 addCode("\tcmp " + lreg.name + ", " + rreg.name + "\n");
@@ -183,7 +322,98 @@ Register CodeGeneration::generateExpression(AST *expression)
                 string reg8 = convert32to8(lreg, 1);
                 addCode("\tsetz " + reg8 + "\n");
                 addCode("\tnot " + reg8 + "\n");
-                addCode("\tadd " + reg8 + ", " + "2" + "\n");
+                addCode("\tand " + lreg.name + ", 1\n");
+                freeRegister(rreg);
+                expression->setReg(lreg);
+            }
+            else if (op == "<=")
+            {
+                addCode("\tcmp " + lreg.name + ", " + rreg.name + "\n");
+                string reg8 = convert32to8(lreg, 1);
+                addCode("\tsetle " + reg8 + "\n");
+                freeRegister(rreg);
+                expression->setReg(lreg);
+            }
+            else if (op == ">=")
+            {
+                addCode("\tcmp " + lreg.name + ", " + rreg.name + "\n");
+                string reg8 = convert32to8(lreg, 1);
+                addCode("\tsetge " + reg8 + "\n");
+                freeRegister(rreg);
+                expression->setReg(lreg);
+            }
+            else if (op == "&")
+            {
+                addCode("\tand " + lreg.name + ", " + rreg.name + "\n");
+                freeRegister(rreg);
+                expression->setReg(lreg);
+            }
+            else if (op == "|")
+            {
+                addCode("\tor " + lreg.name + ", " + rreg.name + "\n");
+                freeRegister(rreg);
+                expression->setReg(lreg);
+            }
+            else if (op == "^")
+            {
+                addCode("\txor " + lreg.name + ", " + rreg.name + "\n");
+                freeRegister(rreg);
+                expression->setReg(lreg);
+            }
+            else if (op == "!")
+            {
+                addCode("\tnot " + lreg.name + "\n");
+                expression->setReg(lreg);
+            }
+            else if (op == "&&")
+            {
+                int count = this->labelCount++;
+
+                // Evaluate the first expression and jump to falseLabel if it's false
+                addCode("\tcmp " + lreg.name + ", 0\n");
+                addCode("\tje falseLabel_" + to_string(count) + "\n");
+
+                // Evaluate the second expression
+                addCode("\tcmp " + rreg.name + ", 0\n");
+                addCode("\tje falseLabel_" + to_string(count) + "\n");
+
+                // If we're here, the first expression was true. The result of the AND operation
+                addCode("\tmov " + lreg.name + ", 1\n");
+                addCode("\tjmp endLabel_" + to_string(count) + "\n");
+
+                // Label for the case where the first expression is false
+                addCode("falseLabel_" + to_string(count) + ":\n");
+                addCode("\tmov " + lreg.name + ", 0\n"); // Set result to false
+
+                // End label
+                addCode("endLabel_" + to_string(count) + ":\n");
+
+                freeRegister(rreg);
+                expression->setReg(lreg);
+            }
+            else if (op == "||")
+            {
+                int count = this->labelCount++;
+
+                // Evaluate the first expression and jump to trueLabel if it's true
+                addCode("\tcmp " + lreg.name + ", 0\n");
+                addCode("\tjne trueLabel_" + to_string(count) + "\n");
+
+                // Evaluate the second expression
+                addCode("\tcmp " + rreg.name + ", 0\n");
+                addCode("\tjne trueLabel_" + to_string(count) + "\n");
+
+                // If we're here, the first expression was false. The result of the OR operation
+                addCode("\tmov " + lreg.name + ", 0\n");
+                addCode("\tjmp endLabel_" + to_string(count) + "\n");
+
+                // Label for the case where the first expression is true
+                addCode("trueLabel_" + to_string(count) + ":\n");
+                addCode("\tmov " + lreg.name + ", 1\n"); // Set result to true
+
+                // End label
+                addCode("endLabel_" + to_string(count) + ":\n");
+
                 freeRegister(rreg);
                 expression->setReg(lreg);
             }
