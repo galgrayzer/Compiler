@@ -1,0 +1,27 @@
+int a;
+int b;
+int temp;
+a = 30;
+b = 15;
+temp = 0;
+
+if (a < b)
+{
+    temp = a;
+    a = b;
+    b = temp;
+}
+
+while (b > 0)
+{
+    if (a > b)
+    {
+        a = a - b;
+    }
+    else
+    {
+        b = b - a;
+    }
+}
+
+out(a);
