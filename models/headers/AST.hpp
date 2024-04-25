@@ -12,11 +12,11 @@ class AST
 {
 private:
     // Attributes
-    Token *root;
-    vector<AST *> *children;
-    int size;
-    Register reg;
-    void printHelper(AST *tree, string prefix, bool isLast);
+    Token *root;                                             // root of the tree
+    vector<AST *> *children;                                 // children of the root
+    int size;                                                // size of the tree
+    Register reg;                                            // register for the node
+    void printHelper(AST *tree, string prefix, bool isLast); // helper function for printing
 
 public:
     // Constructors and Destructor
@@ -26,16 +26,16 @@ public:
     ~AST();
 
     // Methods
-    void setRoot(Token *root);
-    void setReg(Register reg);
-    Register getReg();
-    Token *getRoot();
-    vector<AST *> *getChildren();
-    AST *getChild(int index);
-    int getSize();
-    void setChildren(vector<AST *> *children);
-    void setChild(AST *child, int index);
-    void print();
-    void pushChild(AST *child);
-    string getSymbolType(int type);
+    void setRoot(Token *root);                 // set root of the tree
+    void setReg(Register reg);                 // set register of the node
+    Register getReg();                         // get register of the node
+    Token *getRoot();                          // get root of the tree
+    vector<AST *> *getChildren();              // get children of the root
+    AST *getChild(int index);                  // get child at index
+    int getSize();                             // get size of the tree
+    void setChildren(vector<AST *> *children); // set children of the root
+    void setChild(AST *child, int index);      // set child at index
+    void print();                              // print the tree
+    void pushChild(AST *child);                // push child to the children
+    string getSymbolType(int type);            // get type of the symbol
 };

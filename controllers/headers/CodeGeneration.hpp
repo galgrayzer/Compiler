@@ -14,37 +14,37 @@ using namespace std;
 class CodeGeneration
 {
 private:
-    AST *program;
-    int labelCount;
+    AST *program;   // root of the AST
+    int labelCount; // count of labels
     unordered_set<Symbol, Symbol::HashFunction>
-        symbolTable;
-    Register registers[6];
-    vector<string> code;
-    void addCode(string code);
-    Register generateExpression(AST *expression);
-    void codeFromAST(AST *tree);
+        symbolTable;                              // symbol table
+    Register registers[6];                        // registers
+    vector<string> code;                          // code to be generated
+    void addCode(string code);                    // add code to the code vector
+    Register generateExpression(AST *expression); // generate code for expression
+    void codeFromAST(AST *tree);                  // generate code from AST
 
     // utility functions
-    void generateBase(ofstream &file);
-    void generateIdentifiers(ofstream &file);
-    void generateCode(ostream &file);
-    void generateEnd(ofstream &file);
-    Register getRegister();
-    void setRegState(Register reg, bool state);
-    void freeRegister(Register reg);
-    void pushRegs(string *regs, int n);
-    void popRegs(string *regs, int n);
-    string convert32to8(Register reg, int byte);
+    void generateBase(ofstream &file);           // generate base code
+    void generateIdentifiers(ofstream &file);    // generate identifiers
+    void generateCode(ostream &file);            // generate code
+    void generateEnd(ofstream &file);            // generate end code
+    Register getRegister();                      // get a free register
+    void setRegState(Register reg, bool state);  // set register state
+    void freeRegister(Register reg);             // free register
+    void pushRegs(string *regs, int n);          // push registers
+    void popRegs(string *regs, int n);           // pop registers
+    string convert32to8(Register reg, int byte); // convert 32 bit register to 8 bit register
 
     // function to generate code
-    void outFunction(AST *outFunction);
-    void forStatement(AST *forStatement);
-    void whileStatement(AST *whileStatement);
-    void assignStatement(AST *assignStatement);
-    void ifStatement(AST *ifStatement);
+    void outFunction(AST *outFunction);         // out function
+    void forStatement(AST *forStatement);       // for statement
+    void whileStatement(AST *whileStatement);   // while statement
+    void assignStatement(AST *assignStatement); // assign statement
+    void ifStatement(AST *ifStatement);         // if statement
 
 public:
-    CodeGeneration(AST *program, unordered_set<Symbol, Symbol::HashFunction> symbolTable);
-    void generate(string filename);
-    ~CodeGeneration();
+    CodeGeneration(AST *program, unordered_set<Symbol, Symbol::HashFunction> symbolTable); // constructor
+    void generate(string filename);                                                        // generate code
+    ~CodeGeneration();                                                                     // destructor
 };

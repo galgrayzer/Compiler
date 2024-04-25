@@ -4,6 +4,6 @@
 
 struct Gramer
 {
-    int nonTerminal;
-    std::list<int> right;
+    int nonTerminal; // non terminal
+    std::list<int> right; // right side of the production
 };

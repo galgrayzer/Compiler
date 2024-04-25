@@ -27,8 +27,8 @@ enum Terminal
 
 struct Token
 {
-    string token;
-    int type;
-    int line;
-    int typeCode = -1;
+    string token;      // token
+    int type;          // type of the token
+    int line;          // line number
+    int typeCode = -1; // type code of the token
 } typedef Token;

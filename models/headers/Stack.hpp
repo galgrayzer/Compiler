@@ -3,23 +3,23 @@
 using namespace std;
 #include <iostream>
 
-template <class T>
+template <class T> // Template class for a stack
 class Stack
 {
 private:
-    T *stack;
-    int top;
-    int capacity;
+    T *stack;     // Array to store elements of the stack
+    int top;      // Pointer to the top element of the stack
+    int capacity; // Maximum capacity of the stack
 
 public:
-    Stack(int capacity);
-    ~Stack();
+    Stack(int capacity); // Constructor to initialize a stack with a given capacity
+    ~Stack();            // Destructor to free memory allocated for the stack
 
-    void push(T element);
-    T *pop();
-    T peek();
-    bool isEmpty();
-    bool isFull();
+    void push(T element); // Pushes an element onto the stack
+    T *pop();             // Pops an element from the stack
+    T peek();             // Returns the top element of the stack without removing it
+    bool isEmpty();       // Checks if the stack is empty
+    bool isFull();        // Checks if the stack is full
 };
 
 /**

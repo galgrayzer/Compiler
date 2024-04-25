@@ -5,6 +5,6 @@ using namespace std;
 
 typedef struct Register
 {
-    string name;
-    bool isFree = true;
+    string name; // name of the register
+    bool isFree = true; // state of the register
 } Register;

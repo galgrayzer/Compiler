@@ -1,5 +1,11 @@
 #include "./headers/LexicalAnalyzer.hpp"
 
+/**
+ * @brief Constructs a LexicalAnalyzer object.
+ *
+ * @param path The path to the file to be analyzed.
+ * @param error Pointer to the ErrorHandler object for error handling.
+ */
 LexicalAnalyzer::LexicalAnalyzer(char *path, ErrorHandler *error)
 {
     this->error = error;
@@ -79,11 +85,19 @@ list<Token> LexicalAnalyzer::lexer()
     return tokens;
 }
 
+/**
+ * Tokenizes the given token based on the specified state and line number.
+ *
+ * @param token The token to be tokenized.
+ * @param state The state used to determine the token's type.
+ * @param line The line number where the token is found.
+ * @return A pointer to the created Token object.
+ */
 Token *LexicalAnalyzer::tokenizer(string token, int state, int line)
 {
     Token *t = new Token();
     t->token = token;
-    t->type = this->dfa->getStateArray()[state];
+    t->type = this->dfa->getStateArray()[state]; // get the type of the token
     t->line = line;
     return t;
 }

@@ -9,12 +9,12 @@ using namespace std;
 class ErrorHandler
 {
 private:
-    void handle(string message);
+    void handle(string message); // handle error
 
 public:
-    ErrorHandler();
-    void lexicalError(string token, int line);
-    void syntaxError(Token token);
-    void SymanticError(string message, int line);
-    ~ErrorHandler();
+    ErrorHandler();                               // constructor
+    void lexicalError(string token, int line);    // handle lexical error
+    void syntaxError(Token token);                // handle syntax error
+    void SymanticError(string message, int line); // handle symantic error
+    ~ErrorHandler();                              // destructor
 };

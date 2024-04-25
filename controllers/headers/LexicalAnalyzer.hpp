@@ -16,18 +16,18 @@ class LexicalAnalyzer
 {
 private:
     // Attributes
-    char *filePath;
-    DFA *dfa;
-    ErrorHandler *error;
+    char *filePath;      // path of the file to be analyzed
+    DFA *dfa;            // DFA for lexical analysis
+    ErrorHandler *error; // error handler
 
     // Methods
-    Token *tokenizer(string token, int state, int line);
+    Token *tokenizer(string token, int state, int line); // tokenizes the lexeme
 
 public:
     // Constructor and Destructor
-    LexicalAnalyzer(char *path, ErrorHandler *error);
-    ~LexicalAnalyzer();
+    LexicalAnalyzer(char *path, ErrorHandler *error); // constructor
+    ~LexicalAnalyzer();                               // destructor
 
     // Methods
-    list<Token> lexer();
+    list<Token> lexer(); // performs lexical analysis
 };

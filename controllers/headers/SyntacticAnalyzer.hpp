@@ -13,11 +13,11 @@
 class SyntacticAnalyzer
 {
 private:
-    list<Token> tokens;
-    ErrorHandler *error;
+    list<Token> tokens;  // list of tokens
+    ErrorHandler *error; // error handler
 
 public:
-    SyntacticAnalyzer(list<Token> tokens, ErrorHandler *error);
-    AST *parser(string tablePath, string rulesPath);
-    ~SyntacticAnalyzer();
+    SyntacticAnalyzer(list<Token> tokens, ErrorHandler *error); // constructor
+    AST *parser(string tablePath, string rulesPath);            // parse the tokens
+    ~SyntacticAnalyzer();                                       // destructor
 };
